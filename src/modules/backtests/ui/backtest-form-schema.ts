@@ -57,4 +57,5 @@ export const backtestFormSchema = z.object({
     .default(""),
 });
 
+export type RawBacktestDefinitionInput = z.input<typeof backtestFormSchema>;
 export type BacktestFormValues = z.infer<typeof backtestFormSchema>;
