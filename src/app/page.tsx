@@ -5,7 +5,7 @@ import { EmptyState, PageHeader } from "@/components/ui/shell";
 import { StatCard } from "@/components/ui/stat-card";
 import { getBuildInfo } from "@/modules/build-info/build-info";
 import type { BacktestRunRecord } from "@/modules/backtests/domain/backtest-definition";
-import { getBacktestService } from "@/modules/backtests/server/service-singleton";
+import { getBuildSafeBacktestService } from "@/modules/backtests/server/build-safe-backtest-service";
 
 const recentRunColumns: DataTableColumn<BacktestRunRecord>[] = [
   {
@@ -50,7 +50,7 @@ const recentRunColumns: DataTableColumn<BacktestRunRecord>[] = [
 
 export default async function Home(): Promise<React.JSX.Element> {
   const buildInfo = getBuildInfo();
-  const backtestService = getBacktestService();
+  const backtestService = getBuildSafeBacktestService();
   const [backtests, recentRuns] = await Promise.all([
     backtestService.listBacktests(),
     backtestService.listRecentRuns(5),

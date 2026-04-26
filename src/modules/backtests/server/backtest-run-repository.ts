@@ -4,7 +4,7 @@ import { and, desc, eq } from "drizzle-orm";
 
 import type { BacktestRunRecord } from "@/modules/backtests/domain/backtest-definition";
 import type { BacktestSimulationResult } from "@/modules/backtests/domain/run-ladder-backtest";
-import { db } from "@/modules/db/client";
+import { maybeDb } from "@/modules/db/client";
 import { backtestRunsTable } from "@/modules/db/schema";
 
 type CreateRunningRunInput = {
@@ -63,6 +63,14 @@ function mapRunRow(row: RunRow): BacktestRunRecord {
   };
 }
 
+function getDbOrThrow() {
+  if (!maybeDb) {
+    throw new Error("DATABASE_URL is required.");
+  }
+
+  return maybeDb;
+}
+
 export type BacktestRunRepository = ReturnType<
   typeof createBacktestRunRepository
 >;
@@ -72,6 +80,7 @@ export function createBacktestRunRepository() {
     async createRunningRun(
       input: CreateRunningRunInput,
     ): Promise<BacktestRunRecord> {
+      const db = getDbOrThrow();
       const [row] = await db
         .insert(backtestRunsTable)
         .values({
@@ -86,6 +95,7 @@ export function createBacktestRunRepository() {
     },
 
     async completeRun(input: CompleteRunInput): Promise<BacktestRunRecord> {
+      const db = getDbOrThrow();
       const [row] = await db
         .update(backtestRunsTable)
         .set({
@@ -109,6 +119,7 @@ export function createBacktestRunRepository() {
     },
 
     async failRun(input: FailRunInput): Promise<BacktestRunRecord> {
+      const db = getDbOrThrow();
       const [row] = await db
         .update(backtestRunsTable)
         .set({
@@ -123,6 +134,7 @@ export function createBacktestRunRepository() {
     },
 
     async getRunById(runId: string): Promise<BacktestRunRecord | null> {
+      const db = getDbOrThrow();
       const [row] = await db
         .select()
         .from(backtestRunsTable)
@@ -136,6 +148,7 @@ export function createBacktestRunRepository() {
       definitionId: string;
       runId: string;
     }): Promise<BacktestRunRecord | null> {
+      const db = getDbOrThrow();
       const [row] = await db
         .select()
         .from(backtestRunsTable)
@@ -151,6 +164,7 @@ export function createBacktestRunRepository() {
     },
 
     async listRecentRuns(limitCount: number): Promise<BacktestRunRecord[]> {
+      const db = getDbOrThrow();
       const rows = await db
         .select()
         .from(backtestRunsTable)
@@ -163,6 +177,7 @@ export function createBacktestRunRepository() {
     async listRunsByDefinitionId(
       definitionId: string,
     ): Promise<BacktestRunRecord[]> {
+      const db = getDbOrThrow();
       const rows = await db
         .select()
         .from(backtestRunsTable)
@@ -172,4 +187,10 @@ export function createBacktestRunRepository() {
       return rows.map(mapRunRow);
     },
   };
+}
+
+export async function listRecentRuns(
+  limitCount: number,
+): Promise<BacktestRunRecord[]> {
+  return createBacktestRunRepository().listRecentRuns(limitCount);
 }

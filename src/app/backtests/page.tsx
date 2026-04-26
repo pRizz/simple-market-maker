@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
 import { EmptyState, PageHeader } from "@/components/ui/shell";
 import { StatCard } from "@/components/ui/stat-card";
 import {
@@ -8,6 +8,7 @@ import {
   type BacktestDefinitionRecord,
   type BacktestRunRecord,
 } from "@/modules/backtests/domain/backtest-definition";
+import { getBuildSafeBacktestService } from "@/modules/backtests/server/build-safe-backtest-service";
 import { getBacktestService } from "@/modules/backtests/server/service-singleton";
 
 function formatCurrency(value: number): string {
@@ -29,8 +30,63 @@ function latestReturnValue(maybeRun: BacktestRunRecord | undefined): string {
   return `${maybeRun.totalReturnPercent.toFixed(2)}%`;
 }
 
+const backtestColumns: DataTableColumn<BacktestDefinitionRecord>[] = [
+  {
+    key: "backtest",
+    label: "Backtest",
+    render: (backtest) => (
+      <Link
+        className="font-semibold text-cyan-300 transition hover:text-cyan-200"
+        href={`/backtests/${backtest.id}`}
+      >
+        {formatBacktestLabel(backtest)}
+      </Link>
+    ),
+  },
+  {
+    key: "ticker",
+    label: "Ticker",
+    render: (backtest) => backtest.ticker,
+  },
+  {
+    align: "right",
+    key: "starting-capital",
+    label: "Starting capital",
+    render: (backtest) => formatCurrency(backtest.startingCapital),
+  },
+  {
+    key: "levels",
+    label: "Levels",
+    render: (backtest) =>
+      `${backtest.bidLevels} bids / ${backtest.askLevels} asks`,
+  },
+  {
+    align: "right",
+    key: "actions",
+    label: "Actions",
+    render: (backtest) => (
+      <div className="flex justify-end gap-3">
+        <Link
+          className="text-cyan-200 transition hover:text-cyan-100"
+          href={`/backtests/${backtest.id}`}
+        >
+          View
+        </Link>
+        <Link
+          className="text-cyan-200 transition hover:text-cyan-100"
+          href={`/backtests/${backtest.id}/edit`}
+        >
+          Edit
+        </Link>
+      </div>
+    ),
+  },
+];
+
 export default async function BacktestsPage(): Promise<React.JSX.Element> {
-  const backtestService = getBacktestService();
+  const backtestService = process.env.DATABASE_URL
+    ? getBacktestService()
+    : getBuildSafeBacktestService();
   const [backtests, recentRuns] = await Promise.all([
     backtestService.listBacktests(),
     backtestService.listRecentRuns(5),
@@ -85,59 +141,8 @@ export default async function BacktestsPage(): Promise<React.JSX.Element> {
         />
       ) : (
         <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
-          <DataTable<BacktestDefinitionRecord>
-            columns={[
-              {
-                key: "backtest",
-                label: "Backtest",
-                render: (backtest) => (
-                  <Link
-                    className="font-semibold text-cyan-300 transition hover:text-cyan-200"
-                    href={`/backtests/${backtest.id}`}
-                  >
-                    {formatBacktestLabel(backtest)}
-                  </Link>
-                ),
-              },
-              {
-                key: "ticker",
-                label: "Ticker",
-                render: (backtest) => backtest.ticker,
-              },
-              {
-                align: "right",
-                key: "starting-capital",
-                label: "Starting capital",
-                render: (backtest) => formatCurrency(backtest.startingCapital),
-              },
-              {
-                key: "levels",
-                label: "Levels",
-                render: (backtest) =>
-                  `${backtest.bidLevels} bids / ${backtest.askLevels} asks`,
-              },
-              {
-                align: "right",
-                key: "actions",
-                label: "Actions",
-                render: (backtest) => (
-                  <div className="flex justify-end gap-3">
-                    <Link
-                      className="text-cyan-200 transition hover:text-cyan-100"
-                      href={`/backtests/${backtest.id}`}
-                    >
-                      View
-                    </Link>
-                    <Link
-                      className="text-cyan-200 transition hover:text-cyan-100"
-                      href={`/backtests/${backtest.id}/edit`}
-                    >
-                      Edit
-                    </Link>
-                  </div>
-                ),
-              },
-            ]}
+          <DataTable
+            columns={backtestColumns}
             emptyMessage="No backtests yet. Create your first ladder strategy to get started."
             rows={backtests}
           />

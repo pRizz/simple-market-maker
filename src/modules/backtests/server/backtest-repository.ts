@@ -6,7 +6,7 @@ import type {
   BacktestDefinitionDraft,
   BacktestDefinitionRecord,
 } from "@/modules/backtests/domain/backtest-definition";
-import { db } from "@/modules/db/client";
+import { getDbOrThrow } from "@/modules/db/client";
 import { backtestDefinitionsTable } from "@/modules/db/schema";
 
 type DefinitionRow = typeof backtestDefinitionsTable.$inferSelect;
@@ -76,6 +76,7 @@ export type BacktestRepository = {
 export function createBacktestRepository(): BacktestRepository {
   return {
     async createBacktest(draft) {
+      const db = getDbOrThrow();
       const [row] = await db
         .insert(backtestDefinitionsTable)
         .values(toDefinitionInsertRow(draft))
@@ -85,6 +86,7 @@ export function createBacktestRepository(): BacktestRepository {
     },
 
     async deleteBacktest(definitionId) {
+      const db = getDbOrThrow();
       const deletedRows = await db
         .delete(backtestDefinitionsTable)
         .where(eq(backtestDefinitionsTable.id, definitionId))
@@ -94,6 +96,7 @@ export function createBacktestRepository(): BacktestRepository {
     },
 
     async getBacktestById(definitionId) {
+      const db = getDbOrThrow();
       const [row] = await db
         .select()
         .from(backtestDefinitionsTable)
@@ -104,6 +107,7 @@ export function createBacktestRepository(): BacktestRepository {
     },
 
     async listBacktests() {
+      const db = getDbOrThrow();
       const rows = await db
         .select()
         .from(backtestDefinitionsTable)
@@ -116,6 +120,7 @@ export function createBacktestRepository(): BacktestRepository {
     },
 
     async updateBacktest(definitionId, draft) {
+      const db = getDbOrThrow();
       const [row] = await db
         .update(backtestDefinitionsTable)
         .set({

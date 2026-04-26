@@ -1,13 +1,13 @@
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 
-import { db, postgresPool } from "@/modules/db/client";
+import { getDbOrThrow, getPostgresPoolOrThrow } from "@/modules/db/client";
 
 async function main(): Promise<void> {
-  await migrate(db, {
+  await migrate(getDbOrThrow(), {
     migrationsFolder: "./src/modules/db/migrations",
   });
 
-  await postgresPool.end();
+  await getPostgresPoolOrThrow().end();
 }
 
 void main().catch((error: unknown) => {

@@ -3,11 +3,12 @@ import { describe, expect, it } from "vitest";
 import { maybeParseBacktestDefinition } from "@/modules/backtests/domain/maybe-parse-backtest-definition";
 import { createAskLevels, createBidLevels } from "@/modules/backtests/domain/ladder-level";
 import { runLadderBacktest } from "@/modules/backtests/domain/run-ladder-backtest";
+import type { RawBacktestDefinitionInput } from "@/modules/backtests/ui/backtest-form-schema";
 
 describe("maybeParseBacktestDefinition", () => {
   it("rejects an end date before the start date", () => {
     // Arrange
-    const rawInput = {
+    const rawInput: RawBacktestDefinitionInput = {
       name: "Momentum grid",
       ticker: "msft",
       startDate: "2024-05-10",
@@ -40,7 +41,7 @@ describe("maybeParseBacktestDefinition", () => {
 
   it("normalizes ticker casing and notes", () => {
     // Arrange
-    const rawInput = {
+    const rawInput: RawBacktestDefinitionInput = {
       name: "Calm ladder",
       ticker: "aapl",
       startDate: "2024-01-01",

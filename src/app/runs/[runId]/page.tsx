@@ -2,11 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { BacktestResultCharts } from "@/components/charts/backtest-result-charts";
-import type { DataTableColumn } from "@/components/ui/data-table";
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
 import { Card, PageHeader, StatGrid } from "@/components/ui/shell";
 import { StatCard } from "@/components/ui/stat-card";
-import { getBacktestService } from "@/modules/backtests/server/service-singleton";
+import { getBuildSafeBacktestService } from "@/modules/backtests/server/build-safe-backtest-service";
 
 type RunDetailPageProps = {
   params: Promise<{
@@ -111,7 +110,7 @@ export default async function RunDetailPage({
   params,
 }: RunDetailPageProps): Promise<React.JSX.Element> {
   const { runId } = await params;
-  const backtestService = getBacktestService();
+  const backtestService = getBuildSafeBacktestService();
   const maybeRun = await backtestService.getRun(runId);
 
   if (!maybeRun) {

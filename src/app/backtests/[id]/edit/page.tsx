@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { BacktestForm } from "@/components/backtests/backtest-form";
 import { AppShell } from "@/components/ui/shell";
+import { getBuildSafeBacktestService } from "@/modules/backtests/server/build-safe-backtest-service";
 import { getBacktestService } from "@/modules/backtests/server/service-singleton";
 
 type EditBacktestPageProps = {
@@ -14,7 +15,10 @@ export default async function EditBacktestPage({
   params,
 }: EditBacktestPageProps): Promise<React.JSX.Element> {
   const { id } = await params;
-  const backtestService = getBacktestService();
+  const backtestService =
+    process.env.DATABASE_URL === undefined
+      ? getBuildSafeBacktestService()
+      : getBacktestService();
   const maybeBacktest = await backtestService.getBacktest(id);
 
   if (!maybeBacktest) {

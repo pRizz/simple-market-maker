@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
 import { EmptyState, Shell } from "@/components/ui/shell";
 import { StatCard } from "@/components/ui/stat-card";
 import type { BacktestRunRecord } from "@/modules/backtests/domain/backtest-definition";
+import { getBuildSafeBacktestService } from "@/modules/backtests/server/build-safe-backtest-service";
 import { getBacktestService } from "@/modules/backtests/server/service-singleton";
 
 type BacktestDetailPageProps = {
@@ -60,11 +61,47 @@ function buildRunHistoryRows(runs: BacktestRunRecord[]): RunHistoryRow[] {
   }));
 }
 
+const runHistoryColumns: DataTableColumn<RunHistoryRow>[] = [
+  {
+    key: "startedAt",
+    label: "Started",
+    render: (row) => row.startedAt,
+  },
+  {
+    key: "status",
+    label: "Status",
+    render: (row) => row.status,
+  },
+  {
+    key: "finalEquity",
+    label: "Final equity",
+    render: (row) => row.finalEquity,
+  },
+  {
+    key: "totalReturnPercent",
+    label: "Return",
+    render: (row) => row.totalReturnPercent,
+  },
+  {
+    key: "tradeCount",
+    label: "Trades",
+    render: (row) => row.tradeCount,
+  },
+  {
+    align: "right",
+    key: "actions",
+    label: "Actions",
+    render: (row) => row.actions,
+  },
+];
+
 export default async function BacktestDetailPage({
   params,
 }: BacktestDetailPageProps): Promise<React.JSX.Element> {
   const { id } = await params;
-  const backtestService = getBacktestService();
+  const backtestService = process.env.DATABASE_URL
+    ? getBacktestService()
+    : getBuildSafeBacktestService();
   const maybeBacktest = await backtestService.getBacktest(id);
 
   if (!maybeBacktest) {
@@ -139,40 +176,8 @@ export default async function BacktestDetailPage({
                 title="No runs yet"
               />
             ) : (
-              <DataTable<RunHistoryRow>
-                columns={[
-                  {
-                    key: "startedAt",
-                    label: "Started",
-                    render: (row) => row.startedAt,
-                  },
-                  {
-                    key: "status",
-                    label: "Status",
-                    render: (row) => row.status,
-                  },
-                  {
-                    key: "finalEquity",
-                    label: "Final equity",
-                    render: (row) => row.finalEquity,
-                  },
-                  {
-                    key: "totalReturnPercent",
-                    label: "Return",
-                    render: (row) => row.totalReturnPercent,
-                  },
-                  {
-                    key: "tradeCount",
-                    label: "Trades",
-                    render: (row) => row.tradeCount,
-                  },
-                  {
-                    align: "right",
-                    key: "actions",
-                    label: "Actions",
-                    render: (row) => row.actions,
-                  },
-                ]}
+              <DataTable
+                columns={runHistoryColumns}
                 emptyMessage="No runs yet."
                 rows={buildRunHistoryRows(runs)}
               />
