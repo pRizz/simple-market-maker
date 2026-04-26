@@ -15,10 +15,9 @@ export default async function EditBacktestPage({
   params,
 }: EditBacktestPageProps): Promise<React.JSX.Element> {
   const { id } = await params;
-  const backtestService =
-    process.env.DATABASE_URL === undefined
-      ? getBuildSafeBacktestService()
-      : getBacktestService();
+  const backtestService = process.env.DATABASE_URL
+    ? getBacktestService()
+    : getBuildSafeBacktestService();
   const maybeBacktest = await backtestService.getBacktest(id);
 
   if (!maybeBacktest) {

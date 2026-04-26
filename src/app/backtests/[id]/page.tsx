@@ -149,12 +149,16 @@ export default async function BacktestDetailPage({
         <StatCard
           detail="Percent return relative to starting capital."
           label="Latest return"
-          value={latestRun ? percent(latestRun.totalReturnPercent) : "Unavailable"}
+          value={
+            latestRun ? percent(latestRun.totalReturnPercent) : "Unavailable"
+          }
         />
         <StatCard
           detail="Maximum drawdown recorded during the latest run."
           label="Latest drawdown"
-          value={latestRun ? percent(latestRun.maxDrawdownPercent) : "Unavailable"}
+          value={
+            latestRun ? percent(latestRun.maxDrawdownPercent) : "Unavailable"
+          }
         />
       </section>
 

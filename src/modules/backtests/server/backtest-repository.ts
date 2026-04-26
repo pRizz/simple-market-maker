@@ -76,8 +76,7 @@ export type BacktestRepository = {
 export function createBacktestRepository(): BacktestRepository {
   return {
     async createBacktest(draft) {
-      const db = getDbOrThrow();
-      const [row] = await db
+      const [row] = await getDbOrThrow()
         .insert(backtestDefinitionsTable)
         .values(toDefinitionInsertRow(draft))
         .returning();
@@ -86,8 +85,7 @@ export function createBacktestRepository(): BacktestRepository {
     },
 
     async deleteBacktest(definitionId) {
-      const db = getDbOrThrow();
-      const deletedRows = await db
+      const deletedRows = await getDbOrThrow()
         .delete(backtestDefinitionsTable)
         .where(eq(backtestDefinitionsTable.id, definitionId))
         .returning({ id: backtestDefinitionsTable.id });
@@ -96,8 +94,7 @@ export function createBacktestRepository(): BacktestRepository {
     },
 
     async getBacktestById(definitionId) {
-      const db = getDbOrThrow();
-      const [row] = await db
+      const [row] = await getDbOrThrow()
         .select()
         .from(backtestDefinitionsTable)
         .where(eq(backtestDefinitionsTable.id, definitionId))
@@ -107,8 +104,7 @@ export function createBacktestRepository(): BacktestRepository {
     },
 
     async listBacktests() {
-      const db = getDbOrThrow();
-      const rows = await db
+      const rows = await getDbOrThrow()
         .select()
         .from(backtestDefinitionsTable)
         .orderBy(
@@ -120,8 +116,7 @@ export function createBacktestRepository(): BacktestRepository {
     },
 
     async updateBacktest(definitionId, draft) {
-      const db = getDbOrThrow();
-      const [row] = await db
+      const [row] = await getDbOrThrow()
         .update(backtestDefinitionsTable)
         .set({
           ...toDefinitionInsertRow(draft),

@@ -6,6 +6,7 @@ import { DataTable, type DataTableColumn } from "@/components/ui/data-table";
 import { Card, PageHeader, StatGrid } from "@/components/ui/shell";
 import { StatCard } from "@/components/ui/stat-card";
 import { getBuildSafeBacktestService } from "@/modules/backtests/server/build-safe-backtest-service";
+import { getBacktestService } from "@/modules/backtests/server/service-singleton";
 
 type RunDetailPageProps = {
   params: Promise<{
@@ -110,7 +111,9 @@ export default async function RunDetailPage({
   params,
 }: RunDetailPageProps): Promise<React.JSX.Element> {
   const { runId } = await params;
-  const backtestService = getBuildSafeBacktestService();
+  const backtestService = process.env.DATABASE_URL
+    ? getBacktestService()
+    : getBuildSafeBacktestService();
   const maybeRun = await backtestService.getRun(runId);
 
   if (!maybeRun) {

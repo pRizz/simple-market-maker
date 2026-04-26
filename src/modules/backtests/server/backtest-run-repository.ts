@@ -4,7 +4,7 @@ import { and, desc, eq } from "drizzle-orm";
 
 import type { BacktestRunRecord } from "@/modules/backtests/domain/backtest-definition";
 import type { BacktestSimulationResult } from "@/modules/backtests/domain/run-ladder-backtest";
-import { maybeDb } from "@/modules/db/client";
+import { getDbOrThrow } from "@/modules/db/client";
 import { backtestRunsTable } from "@/modules/db/schema";
 
 type CreateRunningRunInput = {
@@ -61,14 +61,6 @@ function mapRunRow(row: RunRow): BacktestRunRecord {
     priceSeriesJson: maybeJsonToString(row.priceSeriesJson),
     createdAt: row.createdAt,
   };
-}
-
-function getDbOrThrow() {
-  if (!maybeDb) {
-    throw new Error("DATABASE_URL is required.");
-  }
-
-  return maybeDb;
 }
 
 export type BacktestRunRepository = ReturnType<

@@ -1,5 +1,3 @@
-import "server-only";
-
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
@@ -23,7 +21,6 @@ export function getPostgresPool(): Pool | null {
   }
 
   const databaseUrl = maybeDatabaseUrl();
-
   if (!databaseUrl) {
     return null;
   }
