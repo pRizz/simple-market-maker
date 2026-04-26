@@ -197,6 +197,36 @@ describe("provider api key service", () => {
     expectSafeMetadata(result.value);
   });
 
+  it("does not expose short alpha vantage keys in safe metadata", async () => {
+    // Arrange
+    const repository = createFakeRepository();
+    const service = createProviderApiKeyService({
+      encryptProviderKey: () => ({
+        ok: true,
+        value: encryptedKeyA,
+      }),
+      providerKeyRepository: repository,
+    });
+
+    // Act
+    const result = await service.saveProviderKey({
+      providerId: "alpha_vantage",
+      apiKey: "ABCD",
+      enabled: true,
+    });
+
+    // Assert
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      throw new Error("Expected provider key save success.");
+    }
+    expect(result.value.maskedSuffix).toBe("********");
+    expect(result.value.maskedSuffix).not.toContain("ABCD");
+    expect(repository.records[0].maskedSuffix).toBe("********");
+    expect(repository.records[0].maskedSuffix).not.toContain("ABCD");
+    expectSafeMetadata(result.value);
+  });
+
   it("replaces an existing alpha vantage key instead of creating a second row", async () => {
     // Arrange
     const repository = createFakeRepository([providerKeyRecord()]);

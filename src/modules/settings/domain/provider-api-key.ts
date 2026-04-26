@@ -31,7 +31,7 @@ export function maskedSuffixFromApiKey(apiKey: string): string {
   const trimmedApiKey = apiKey.trim();
 
   if (trimmedApiKey.length <= 4) {
-    return trimmedApiKey;
+    return "****";
   }
 
   return trimmedApiKey.slice(-4);
