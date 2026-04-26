@@ -22,7 +22,7 @@ function inputForSource(source: MarketDataSource) {
   return {
     ticker: "msft",
     source,
-    interval: "daily",
+    interval: "daily" as const,
     startDate: "2024-01-02",
     endDate: "2024-01-03",
     notes: "",
@@ -193,7 +193,9 @@ describe("market data service", () => {
       throw new Error("Expected provider failure to return form errors.");
     }
     const serializedErrors = result.formErrors.join(" ");
-    expect(serializedErrors).toBe("The provider rejected the saved key.");
+    expect(serializedErrors).toBe(
+      "The provider validation request could not be completed.",
+    );
     expect(serializedErrors).not.toContain("https://www.alphavantage.co");
     expect(serializedErrors).not.toContain("apikey=");
     expect(serializedErrors).not.toContain(rawKey);

@@ -18,12 +18,18 @@ import {
 } from "@/modules/market-data/server/market-data-chunk-repository";
 import type { MarketDataFetchProvider } from "@/modules/market-data/server/market-data-provider";
 import { providerForSource } from "@/modules/market-data/server/provider-factory";
+import {
+  createSettingsService,
+  type SettingsService,
+} from "@/modules/settings/server/settings-service";
+import { sanitizeProviderError } from "@/modules/settings/server/provider-error-sanitizer";
 
 type MarketDataServiceDependencies = {
   marketDataChunkRepository?: MarketDataChunkRepository;
   providerFactory?: (
     source: MarketDataSource,
   ) => Promise<MarketDataFetchProvider>;
+  settingsService?: Pick<SettingsService, "getSettings">;
 };
 
 type CreateMarketDataChunkResult =
@@ -61,6 +67,7 @@ export function createMarketDataService(
   const marketDataChunkRepository =
     dependencies.marketDataChunkRepository ?? createMarketDataChunkRepository();
   const makeProvider = dependencies.providerFactory ?? providerForSource;
+  const settingsService = dependencies.settingsService ?? createSettingsService();
 
   return {
     async createChunk(
@@ -74,6 +81,20 @@ export function createMarketDataService(
           fieldErrors: fieldErrorsFromParsedResult(parsedInput.fieldErrors),
           formErrors: parsedInput.formErrors,
         };
+      }
+
+      if (parsedInput.value.source === "sample") {
+        const settingsResult = await settingsService.getSettings();
+
+        if (!settingsResult.ok) {
+          return formErrorResult(
+            settingsResult.formErrors[0] ?? "Unable to load app settings.",
+          );
+        }
+
+        if (!settingsResult.value.showSampleData) {
+          return formErrorResult("Sample data is disabled in settings.");
+        }
       }
 
       try {
@@ -102,12 +123,7 @@ export function createMarketDataService(
           chunk,
         };
       } catch (error) {
-        const message =
-          error instanceof Error
-            ? error.message
-            : "Market data fetch failed.";
-
-        return formErrorResult(message);
+        return formErrorResult(sanitizeProviderError(error).message);
       }
     },
 
