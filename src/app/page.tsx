@@ -99,6 +99,12 @@ export default async function Home(): Promise<React.JSX.Element> {
               </Link>
               <Link
                 className="inline-flex items-center justify-center rounded-full border border-white/10 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:border-cyan-400/50 hover:text-cyan-200"
+                href="/settings"
+              >
+                Settings
+              </Link>
+              <Link
+                className="inline-flex items-center justify-center rounded-full border border-white/10 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:border-cyan-400/50 hover:text-cyan-200"
                 href="/backtests/new"
               >
                 Create first strategy
