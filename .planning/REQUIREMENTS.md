@@ -119,61 +119,61 @@ Explicitly excluded from the v1 roadmap.
 
 Which phases cover which requirements. Updated during roadmap creation.
 
-| Requirement | Phase | Status  |
-| ----------- | ----- | ------- |
-| SET-01      | TBD   | Pending |
-| SET-02      | TBD   | Pending |
-| SET-03      | TBD   | Pending |
-| SET-04      | TBD   | Pending |
-| KEY-01      | TBD   | Pending |
-| KEY-02      | TBD   | Pending |
-| KEY-03      | TBD   | Pending |
-| KEY-04      | TBD   | Pending |
-| KEY-05      | TBD   | Pending |
-| DATA-01     | TBD   | Pending |
-| DATA-02     | TBD   | Pending |
-| DATA-03     | TBD   | Pending |
-| DATA-04     | TBD   | Pending |
-| DATA-05     | TBD   | Pending |
-| DATA-06     | TBD   | Pending |
-| PROV-01     | TBD   | Pending |
-| PROV-02     | TBD   | Pending |
-| PROV-03     | TBD   | Pending |
-| PROV-04     | TBD   | Pending |
-| PROV-05     | TBD   | Pending |
-| PROV-06     | TBD   | Pending |
-| BT-01       | TBD   | Pending |
-| BT-02       | TBD   | Pending |
-| BT-03       | TBD   | Pending |
-| BT-04       | TBD   | Pending |
-| BT-05       | TBD   | Pending |
-| BT-06       | TBD   | Pending |
-| BT-07       | TBD   | Pending |
-| CSV-01      | TBD   | Pending |
-| CSV-02      | TBD   | Pending |
-| CSV-03      | TBD   | Pending |
-| CSV-04      | TBD   | Pending |
-| CSV-05      | TBD   | Pending |
-| MET-01      | TBD   | Pending |
-| MET-02      | TBD   | Pending |
-| MET-03      | TBD   | Pending |
-| CHART-01    | TBD   | Pending |
-| CHART-02    | TBD   | Pending |
-| CHART-03    | TBD   | Pending |
-| CHART-04    | TBD   | Pending |
-| UI-01       | TBD   | Pending |
-| UI-02       | TBD   | Pending |
-| UI-03       | TBD   | Pending |
-| UI-04       | TBD   | Pending |
-| UI-05       | TBD   | Pending |
+| Requirement | Phase   | Status  |
+| ----------- | ------- | ------- |
+| SET-01      | Phase 1 | Pending |
+| SET-02      | Phase 1 | Pending |
+| SET-03      | Phase 1 | Pending |
+| SET-04      | Phase 1 | Pending |
+| KEY-01      | Phase 1 | Pending |
+| KEY-02      | Phase 1 | Pending |
+| KEY-03      | Phase 1 | Pending |
+| KEY-04      | Phase 1 | Pending |
+| KEY-05      | Phase 1 | Pending |
+| DATA-01     | Phase 2 | Pending |
+| DATA-02     | Phase 2 | Pending |
+| DATA-03     | Phase 2 | Pending |
+| DATA-04     | Phase 2 | Pending |
+| DATA-05     | Phase 2 | Pending |
+| DATA-06     | Phase 2 | Pending |
+| PROV-01     | Phase 3 | Pending |
+| PROV-02     | Phase 4 | Pending |
+| PROV-03     | Phase 3 | Pending |
+| PROV-04     | Phase 3 | Pending |
+| PROV-05     | Phase 3 | Pending |
+| PROV-06     | Phase 3 | Pending |
+| BT-01       | Phase 3 | Pending |
+| BT-02       | Phase 3 | Pending |
+| BT-03       | Phase 3 | Pending |
+| BT-04       | Phase 3 | Pending |
+| BT-05       | Phase 3 | Pending |
+| BT-06       | Phase 3 | Pending |
+| BT-07       | Phase 3 | Pending |
+| CSV-01      | Phase 5 | Pending |
+| CSV-02      | Phase 5 | Pending |
+| CSV-03      | Phase 5 | Pending |
+| CSV-04      | Phase 5 | Pending |
+| CSV-05      | Phase 5 | Pending |
+| MET-01      | Phase 6 | Pending |
+| MET-02      | Phase 6 | Pending |
+| MET-03      | Phase 6 | Pending |
+| CHART-01    | Phase 7 | Pending |
+| CHART-02    | Phase 7 | Pending |
+| CHART-03    | Phase 7 | Pending |
+| CHART-04    | Phase 7 | Pending |
+| UI-01       | Phase 7 | Pending |
+| UI-02       | Phase 7 | Pending |
+| UI-03       | Phase 7 | Pending |
+| UI-04       | Phase 7 | Pending |
+| UI-05       | Phase 7 | Pending |
 
 **Coverage:**
 
 - v1 requirements: 45 total
-- Mapped to phases: 0
-- Unmapped: 45 ⚠️
+- Mapped to phases: 45
+- Unmapped: 0
 
 ---
 
 _Requirements defined: 2026-04-26_
-_Last updated: 2026-04-26 after initial definition_
+_Last updated: 2026-04-26 after roadmap creation_
