@@ -228,3 +228,6 @@ export function createBacktestService(
     },
   };
 }
+
+export type CreateOrUpdateBacktestResponse = CreateOrUpdateBacktestResult;
+export type RunBacktestResponse = RunBacktestResult;

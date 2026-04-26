@@ -129,3 +129,34 @@ export function createBacktestRepository(): BacktestRepository {
     },
   };
 }
+
+export async function listBacktestDefinitions(): Promise<
+  BacktestDefinitionRecord[]
+> {
+  return createBacktestRepository().listBacktests();
+}
+
+export async function getBacktestDefinitionById(
+  definitionId: string,
+): Promise<BacktestDefinitionRecord | null> {
+  return createBacktestRepository().getBacktestById(definitionId);
+}
+
+export async function createBacktestDefinition(
+  draft: BacktestDefinitionDraft,
+): Promise<BacktestDefinitionRecord> {
+  return createBacktestRepository().createBacktest(draft);
+}
+
+export async function updateBacktestDefinition(
+  definitionId: string,
+  draft: BacktestDefinitionDraft,
+): Promise<BacktestDefinitionRecord | null> {
+  return createBacktestRepository().updateBacktest(definitionId, draft);
+}
+
+export async function deleteBacktestDefinition(
+  definitionId: string,
+): Promise<boolean> {
+  return createBacktestRepository().deleteBacktest(definitionId);
+}

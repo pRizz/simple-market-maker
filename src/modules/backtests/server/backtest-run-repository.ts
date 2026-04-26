@@ -63,7 +63,9 @@ function mapRunRow(row: RunRow): BacktestRunRecord {
   };
 }
 
-export type BacktestRunRepository = ReturnType<typeof createBacktestRunRepository>;
+export type BacktestRunRepository = ReturnType<
+  typeof createBacktestRunRepository
+>;
 
 export function createBacktestRunRepository() {
   return {
@@ -91,11 +93,13 @@ export function createBacktestRunRepository() {
           completedAt: input.completedAt,
           fillEventsJson: input.result.artifacts.fillEvents,
           finalEquity: input.result.summary.finalEquity.toFixed(2),
-          maxDrawdownPercent: input.result.summary.maxDrawdownPercent.toFixed(4),
+          maxDrawdownPercent:
+            input.result.summary.maxDrawdownPercent.toFixed(4),
           priceSeriesJson: input.result.artifacts.priceSeries,
           status: "completed",
           summaryJson: input.result.summary,
-          totalReturnPercent: input.result.summary.totalReturnPercent.toFixed(4),
+          totalReturnPercent:
+            input.result.summary.totalReturnPercent.toFixed(4),
           tradeCount: input.result.summary.tradeCount,
         })
         .where(eq(backtestRunsTable.id, input.runId))
