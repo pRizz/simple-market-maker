@@ -75,6 +75,16 @@ function requestWithJson(url: string, body: unknown): Request {
   });
 }
 
+function malformedJsonRequest(url: string, method: "POST" | "PUT"): Request {
+  return new Request(url, {
+    body: "{",
+    headers: {
+      "content-type": "application/json",
+    },
+    method,
+  });
+}
+
 function providerContext(providerId: string): RouteContext {
   return {
     params: Promise.resolve({
@@ -266,6 +276,26 @@ describe("settings api contract", () => {
     });
   });
 
+  it("returns structured field errors for malformed settings JSON", async () => {
+    // Arrange
+    const request = malformedJsonRequest(
+      "http://local.test/api/settings",
+      "PUT",
+    );
+
+    // Act
+    const response = await settingsRoute.PUT(request);
+    const body = await jsonBody(response);
+
+    // Assert
+    expect(response.status).toBe(400);
+    expect(body).toMatchObject({
+      ok: false,
+      message: "Request body must be valid JSON.",
+    });
+    expect(serviceMocks.settingsService.updateSettings).not.toHaveBeenCalled();
+  });
+
   it("accepts alpha vantage and rejects sample and twelve data defaults", async () => {
     // Arrange
     const alphaRequest = requestWithJson("http://local.test/api/settings", {
@@ -326,6 +356,28 @@ describe("settings api contract", () => {
       maskedSuffix: "****1234",
     });
     expectSafeBody(body);
+  });
+
+  it("returns structured field errors for malformed provider key create JSON", async () => {
+    // Arrange
+    const request = malformedJsonRequest(
+      "http://local.test/api/settings/provider-keys",
+      "POST",
+    );
+
+    // Act
+    const response = await providerKeysRoute.POST(request);
+    const body = await jsonBody(response);
+
+    // Assert
+    expect(response.status).toBe(400);
+    expect(body).toMatchObject({
+      ok: false,
+      message: "Request body must be valid JSON.",
+    });
+    expect(
+      serviceMocks.providerApiKeyService.saveProviderKey,
+    ).not.toHaveBeenCalled();
   });
 
   it("rejects sample and twelve data provider key creates safely", async () => {
@@ -390,6 +442,34 @@ describe("settings api contract", () => {
     expect(
       serviceMocks.providerApiKeyService.deleteProviderKey,
     ).toHaveBeenCalledWith("alpha_vantage");
+  });
+
+  it("returns structured field errors for malformed provider key update JSON", async () => {
+    // Arrange
+    const request = malformedJsonRequest(
+      "http://local.test/api/settings/provider-keys/alpha_vantage",
+      "PUT",
+    );
+
+    // Act
+    const response = await providerKeyRoute.PUT(
+      request,
+      providerContext("alpha_vantage"),
+    );
+    const body = await jsonBody(response);
+
+    // Assert
+    expect(response.status).toBe(400);
+    expect(body).toMatchObject({
+      ok: false,
+      message: "Request body must be valid JSON.",
+    });
+    expect(
+      serviceMocks.providerApiKeyService.saveProviderKey,
+    ).not.toHaveBeenCalled();
+    expect(
+      serviceMocks.providerApiKeyService.setProviderKeyEnabled,
+    ).not.toHaveBeenCalled();
   });
 
   it("rejects sample and twelve data provider key route actions safely", async () => {

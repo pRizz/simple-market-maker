@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { readJsonBody } from "@/app/api/settings/read-json-body";
 import { getProviderApiKeyService } from "@/modules/settings/server/service-singleton";
 
 function providerKeyCreateInput(rawInput: unknown): unknown {
@@ -23,9 +24,14 @@ export async function GET(): Promise<Response> {
 }
 
 export async function POST(request: Request): Promise<Response> {
-  const rawInput = await request.json();
+  const jsonBody = await readJsonBody(request);
+
+  if (!jsonBody.ok) {
+    return jsonBody.response;
+  }
+
   const result = await getProviderApiKeyService().saveProviderKey(
-    providerKeyCreateInput(rawInput),
+    providerKeyCreateInput(jsonBody.value),
   );
 
   if (!result.ok) {

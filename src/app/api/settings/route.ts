@@ -6,6 +6,7 @@ import {
   getProviderApiKeyService,
   getSettingsService,
 } from "@/modules/settings/server/service-singleton";
+import { readJsonBody } from "@/app/api/settings/read-json-body";
 
 function environmentFallbacks() {
   return Object.values(providerDescriptors).flatMap((provider) => {
@@ -44,8 +45,13 @@ export async function GET(): Promise<Response> {
 }
 
 export async function PUT(request: Request): Promise<Response> {
-  const rawInput = await request.json();
-  const result = await getSettingsService().updateSettings(rawInput);
+  const jsonBody = await readJsonBody(request);
+
+  if (!jsonBody.ok) {
+    return jsonBody.response;
+  }
+
+  const result = await getSettingsService().updateSettings(jsonBody.value);
 
   if (!result.ok) {
     return NextResponse.json(result, { status: 400 });

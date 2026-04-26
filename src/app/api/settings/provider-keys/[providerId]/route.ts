@@ -4,6 +4,7 @@ import {
   providerIds,
   type ProviderId,
 } from "@/modules/settings/domain/app-settings";
+import { readJsonBody } from "@/app/api/settings/read-json-body";
 import { getProviderApiKeyService } from "@/modules/settings/server/service-singleton";
 
 type ProviderKeyRouteContext = {
@@ -65,12 +66,21 @@ export async function PUT(
     return providerNotFoundResponse();
   }
 
-  const rawInput = await request.json();
-  if (!rawInput || typeof rawInput !== "object" || Array.isArray(rawInput)) {
+  const jsonBody = await readJsonBody(request);
+
+  if (!jsonBody.ok) {
+    return jsonBody.response;
+  }
+
+  if (
+    !jsonBody.value ||
+    typeof jsonBody.value !== "object" ||
+    Array.isArray(jsonBody.value)
+  ) {
     return invalidProviderKeyUpdateResponse();
   }
 
-  const input = rawInput as Record<string, unknown>;
+  const input = jsonBody.value as Record<string, unknown>;
   if (typeof input.apiKey === "string") {
     const result = await getProviderApiKeyService().saveProviderKey(
       providerKeyUpdateInput(maybePathProviderId, input),
