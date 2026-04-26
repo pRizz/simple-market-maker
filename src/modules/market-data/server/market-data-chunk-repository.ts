@@ -21,6 +21,8 @@ type MatchingChunkInput = {
   ticker: string;
 };
 
+export type MatchingMarketDataChunkInput = MatchingChunkInput;
+
 function dateFromUnknown(value: unknown, label: string): Date {
   if (value instanceof Date) {
     return value;
@@ -101,6 +103,11 @@ function mapChunkRow(row: ChunkRow): MarketDataChunkRecord {
 
 export type MarketDataChunkRepository = ReturnType<
   typeof createMarketDataChunkRepository
+>;
+
+export type MarketDataChunkLookupRepository = Pick<
+  MarketDataChunkRepository,
+  "findMatchingChunk"
 >;
 
 export function createMarketDataChunkRepository() {

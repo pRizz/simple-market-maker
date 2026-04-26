@@ -8,6 +8,8 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ladder_backtester
+      ALPHA_VANTAGE_API_KEY: ${ALPHA_VANTAGE_API_KEY:-}
+      MARKET_DATA_SOURCE: ${MARKET_DATA_SOURCE:-sample}
       NEXT_PUBLIC_APP_VERSION: 0.1.0
       NEXT_PUBLIC_APP_COMMIT: local-docker
       NEXT_PUBLIC_APP_BUILD_TIME: local-compose
