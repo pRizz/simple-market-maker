@@ -96,14 +96,22 @@ export default async function BacktestsPage(): Promise<React.JSX.Element> {
     <div className="space-y-8">
       <PageHeader
         actions={
-          <Link
-            className="inline-flex items-center justify-center rounded-full bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
-            href="/backtests/new"
-          >
-            New backtest
-          </Link>
+          <>
+            <Link
+              className="inline-flex items-center justify-center rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-slate-100 transition hover:border-cyan-400/50 hover:text-cyan-200"
+              href="/market-data"
+            >
+              Market data
+            </Link>
+            <Link
+              className="inline-flex items-center justify-center rounded-full bg-cyan-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-cyan-300"
+              href="/backtests/new"
+            >
+              New backtest
+            </Link>
+          </>
         }
-        description="Create, review, and rerun persisted ladder strategy definitions."
+        description="Create, review, and rerun persisted ladder strategy definitions. Fetch market data chunks first when you want stored real candles available for runs."
         eyebrow="Workspace"
         title="Backtests"
       />

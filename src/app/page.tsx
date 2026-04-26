@@ -6,6 +6,7 @@ import { StatCard } from "@/components/ui/stat-card";
 import { getBuildInfo } from "@/modules/build-info/build-info";
 import type { BacktestRunRecord } from "@/modules/backtests/domain/backtest-definition";
 import { getBuildSafeBacktestService } from "@/modules/backtests/server/build-safe-backtest-service";
+import { getBuildSafeMarketDataService } from "@/modules/market-data/server/build-safe-market-data-service";
 
 const recentRunColumns: DataTableColumn<BacktestRunRecord>[] = [
   {
@@ -51,9 +52,11 @@ const recentRunColumns: DataTableColumn<BacktestRunRecord>[] = [
 export default async function Home(): Promise<React.JSX.Element> {
   const buildInfo = getBuildInfo();
   const backtestService = getBuildSafeBacktestService();
-  const [backtests, recentRuns] = await Promise.all([
+  const marketDataService = getBuildSafeMarketDataService();
+  const [backtests, recentRuns, marketDataChunks] = await Promise.all([
     backtestService.listBacktests(),
     backtestService.listRecentRuns(5),
+    marketDataService.listChunks(),
   ]);
   const bestRun =
     recentRuns.length === 0
@@ -89,6 +92,12 @@ export default async function Home(): Promise<React.JSX.Element> {
                 Open backtests
               </Link>
               <Link
+                className="inline-flex items-center justify-center rounded-full border border-cyan-400/40 px-5 py-3 text-sm font-semibold text-cyan-100 transition hover:border-cyan-300 hover:bg-cyan-400/10"
+                href="/market-data"
+              >
+                Market data
+              </Link>
+              <Link
                 className="inline-flex items-center justify-center rounded-full border border-white/10 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:border-cyan-400/50 hover:text-cyan-200"
                 href="/backtests/new"
               >
@@ -108,9 +117,9 @@ export default async function Home(): Promise<React.JSX.Element> {
             value={backtests.length.toString()}
           />
           <StatCard
-            detail="Historical runs recorded so far."
-            label="Backtest runs"
-            value={recentRuns.length.toString()}
+            detail="Downloaded ticker ranges ready for charting."
+            label="Market chunks"
+            value={marketDataChunks.length.toString()}
           />
           <StatCard
             detail="Best visible return in recent history."
