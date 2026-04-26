@@ -37,19 +37,19 @@ Keep the current `Candle[]` contract into `runLadderBacktest()` unchanged. Add p
 
 ## Component Boundaries
 
-| Component | Location | Responsibility | Communicates With |
-| --- | --- | --- | --- |
-| Provider registry | `src/modules/market-data/server/provider-registry.ts` plus domain provider ids | Compile-time list of supported providers, labels, capabilities, default interval, adjusted support, key requirements, and provider factory creation. | Provider adapters, settings service, fetch forms, missing-data plan UI |
-| Provider adapters | `src/modules/market-data/server/*-market-data-provider.ts` | Fetch provider-specific OHLCV, normalize to `Candle[]`, return sanitized provider metadata. | Registry, API key repository, fetch service |
-| Market data domain | `src/modules/market-data/domain/` | Source-neutral types: provider id, interval, adjustment mode, currency, chunk metadata, coverage windows, source segments, CSV parse results, volatility metrics over candles. | Services, repositories, forms, charts, tests |
-| Market data fetch service | `src/modules/market-data/server/market-data-service.ts` or a new `market-data-fetch-service.ts` | Validate fetch requests, resolve provider credentials/settings, call provider adapter, normalize/sort/filter candles, persist chunks with source metadata. | Provider registry, API key repo, settings repo, chunk repo |
-| Market data coverage/resolution service | `src/modules/market-data/server/market-data-resolution-service.ts` | Given ticker/date/interval/adjustment/provider preference, find compatible chunks, compute missing windows, optionally execute fetch plan, and return candles plus provenance. | Chunk repo, fetch service, settings service, backtest service |
-| CSV import service | `src/modules/market-data/server/csv-import-service.ts` | Parse uploaded CSV through pure domain parser, normalize candles, persist as `custom_csv` market-data chunk with import metadata. | App Router upload API, chunk repo, market-data domain parser |
-| Settings domain/server | `src/modules/settings/domain/`, `src/modules/settings/server/` | Typed single-admin settings and provider API key management. Avoid account/team abstractions. | Settings pages/API, provider registry, fetch/resolution services |
-| Backtest service | `src/modules/backtests/server/backtest-service.ts` | Continue CRUD/run orchestration, but replace direct `MarketDataProvider` dependency with `MarketDataResolutionService`. Persist run source provenance. | Backtest repos, market-data resolver, pure engine |
-| Repositories | `src/modules/*/server/*repository.ts` | Own Drizzle queries and row-to-domain mapping, including Zod/domain parsing of JSONB provenance/artifacts. | Services only |
-| Delivery routes | `src/app/api/...`, `src/app/.../page.tsx` | Route-level parsing, response mapping, redirects, and UI data loading. Keep business rules out. | Services |
-| Chart/UI components | `src/components/charts/`, `src/components/market-data/`, `src/components/backtests/`, `src/components/ui/` | Render source labels, fetch progress, settings forms, import forms, volatility metrics, and subtle Magic UI wrappers. | Domain records and API routes only |
+| Component                               | Location                                                                                                   | Responsibility                                                                                                                                                                 | Communicates With                                                      |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| Provider registry                       | `src/modules/market-data/server/provider-registry.ts` plus domain provider ids                             | Compile-time list of supported providers, labels, capabilities, default interval, adjusted support, key requirements, and provider factory creation.                           | Provider adapters, settings service, fetch forms, missing-data plan UI |
+| Provider adapters                       | `src/modules/market-data/server/*-market-data-provider.ts`                                                 | Fetch provider-specific OHLCV, normalize to `Candle[]`, return sanitized provider metadata.                                                                                    | Registry, API key repository, fetch service                            |
+| Market data domain                      | `src/modules/market-data/domain/`                                                                          | Source-neutral types: provider id, interval, adjustment mode, currency, chunk metadata, coverage windows, source segments, CSV parse results, volatility metrics over candles. | Services, repositories, forms, charts, tests                           |
+| Market data fetch service               | `src/modules/market-data/server/market-data-service.ts` or a new `market-data-fetch-service.ts`            | Validate fetch requests, resolve provider credentials/settings, call provider adapter, normalize/sort/filter candles, persist chunks with source metadata.                     | Provider registry, API key repo, settings repo, chunk repo             |
+| Market data coverage/resolution service | `src/modules/market-data/server/market-data-resolution-service.ts`                                         | Given ticker/date/interval/adjustment/provider preference, find compatible chunks, compute missing windows, optionally execute fetch plan, and return candles plus provenance. | Chunk repo, fetch service, settings service, backtest service          |
+| CSV import service                      | `src/modules/market-data/server/csv-import-service.ts`                                                     | Parse uploaded CSV through pure domain parser, normalize candles, persist as `custom_csv` market-data chunk with import metadata.                                              | App Router upload API, chunk repo, market-data domain parser           |
+| Settings domain/server                  | `src/modules/settings/domain/`, `src/modules/settings/server/`                                             | Typed single-admin settings and provider API key management. Avoid account/team abstractions.                                                                                  | Settings pages/API, provider registry, fetch/resolution services       |
+| Backtest service                        | `src/modules/backtests/server/backtest-service.ts`                                                         | Continue CRUD/run orchestration, but replace direct `MarketDataProvider` dependency with `MarketDataResolutionService`. Persist run source provenance.                         | Backtest repos, market-data resolver, pure engine                      |
+| Repositories                            | `src/modules/*/server/*repository.ts`                                                                      | Own Drizzle queries and row-to-domain mapping, including Zod/domain parsing of JSONB provenance/artifacts.                                                                     | Services only                                                          |
+| Delivery routes                         | `src/app/api/...`, `src/app/.../page.tsx`                                                                  | Route-level parsing, response mapping, redirects, and UI data loading. Keep business rules out.                                                                                | Services                                                               |
+| Chart/UI components                     | `src/components/charts/`, `src/components/market-data/`, `src/components/backtests/`, `src/components/ui/` | Render source labels, fetch progress, settings forms, import forms, volatility metrics, and subtle Magic UI wrappers.                                                          | Domain records and API routes only                                     |
 
 ## Provider Registry Shape
 
@@ -87,11 +87,11 @@ This lets the app store provider request id, returned adjusted status, response 
 
 Add a settings module and keep it single-admin.
 
-| Table | Key fields | Notes |
-| --- | --- | --- |
-| `app_settings` | singleton `id`, `defaultMarketDataProvider`, `defaultMissingDataBehavior`, `defaultAdjustmentMode`, `defaultInterval`, `updatedAt` | Prefer a typed singleton row over generic key/value so settings have clear types. |
-| `provider_api_keys` | `id`, `providerId`, `apiKeyCiphertext`, `apiKeyLast4`, `createdAt`, `updatedAt`, `lastValidatedAt` | Store only encrypted secret material server-side. No client route should return raw keys. |
-| `provider_settings` | `providerId`, `enabled`, `displayPriority`, `defaultAdjustmentMode`, `updatedAt` | Optional but useful once provider registry supports more than Alpha Vantage. |
+| Table               | Key fields                                                                                                                         | Notes                                                                                     |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `app_settings`      | singleton `id`, `defaultMarketDataProvider`, `defaultMissingDataBehavior`, `defaultAdjustmentMode`, `defaultInterval`, `updatedAt` | Prefer a typed singleton row over generic key/value so settings have clear types.         |
+| `provider_api_keys` | `id`, `providerId`, `apiKeyCiphertext`, `apiKeyLast4`, `createdAt`, `updatedAt`, `lastValidatedAt`                                 | Store only encrypted secret material server-side. No client route should return raw keys. |
+| `provider_settings` | `providerId`, `enabled`, `displayPriority`, `defaultAdjustmentMode`, `updatedAt`                                                   | Optional but useful once provider registry supports more than Alpha Vantage.              |
 
 Use `server-only` credential helpers. For v1, an app-level encryption secret is enough; do not build users, teams, ownership, or OAuth. If encryption is deferred, explicitly record that as a risk and never expose the raw value back through JSON.
 
@@ -101,15 +101,15 @@ Extend `market_data_chunks` instead of replacing it.
 
 Recommended columns:
 
-| Column | Purpose |
-| --- | --- |
-| `provider_id` or expanded `source` enum | Distinguish `sample`, `alpha_vantage`, selected second provider, and `custom_csv`. |
-| `adjustment_mode` | `unadjusted`, `adjusted`, or `unknown`; clearer than a nullable boolean for custom imports. |
-| `currency` | Default `USD` for this milestone. |
-| `requested_start_date`, `requested_end_date` | Preserve the user/provider request range. |
-| existing `start_date`, `end_date` | Treat as actual persisted candle coverage after provider filtering/import parsing. |
-| `source_metadata_json` | Sanitized provider/import metadata: request path without key, response status, provider symbol, timezone, import filename/hash/column map, warnings. |
-| `source_label` | Cached display label such as `Alpha Vantage, daily, unadjusted, USD`. |
+| Column                                       | Purpose                                                                                                                                              |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `provider_id` or expanded `source` enum      | Distinguish `sample`, `alpha_vantage`, selected second provider, and `custom_csv`.                                                                   |
+| `adjustment_mode`                            | `unadjusted`, `adjusted`, or `unknown`; clearer than a nullable boolean for custom imports.                                                          |
+| `currency`                                   | Default `USD` for this milestone.                                                                                                                    |
+| `requested_start_date`, `requested_end_date` | Preserve the user/provider request range.                                                                                                            |
+| existing `start_date`, `end_date`            | Treat as actual persisted candle coverage after provider filtering/import parsing.                                                                   |
+| `source_metadata_json`                       | Sanitized provider/import metadata: request path without key, response status, provider symbol, timezone, import filename/hash/column map, warnings. |
+| `source_label`                               | Cached display label such as `Alpha Vantage, daily, unadjusted, USD`.                                                                                |
 
 Do not add a uniqueness constraint that collapses repeat fetches. A requirement is to distinguish separate fetches by provider, ticker, date range, interval, adjusted status, fetch timestamp, and metadata. Add indexes for lookup, not uniqueness:
 
@@ -126,11 +126,11 @@ Persist data provenance with every completed run so charts and future audits can
 
 Recommended low-churn approach:
 
-| Column | Purpose |
-| --- | --- |
+| Column                        | Purpose                                                                                                                                                         |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `market_data_provenance_json` | Versioned JSON containing ordered source segments, chunk ids, provider ids, labels, adjustment mode, currency, fetched/imported timestamps, and coverage dates. |
-| `volatility_metrics_json` | Versioned volatility metrics derived from the run candle series. |
-| optional scalar columns | `marketDataProviderId`, `marketDataAdjustmentMode`, `marketDataCurrency`, `annualizedVolatilityPercent` for list views if needed. |
+| `volatility_metrics_json`     | Versioned volatility metrics derived from the run candle series.                                                                                                |
+| optional scalar columns       | `marketDataProviderId`, `marketDataAdjustmentMode`, `marketDataCurrency`, `annualizedVolatilityPercent` for list views if needed.                               |
 
 If the roadmap chooses multi-chunk stitching in the same milestone, prefer a child table:
 
@@ -260,12 +260,12 @@ Add volatility calculations as pure domain functions, not chart code.
 
 Recommended first metrics:
 
-| Metric | Input | Persist/display |
-| --- | --- | --- |
-| Daily close-to-close volatility | `Candle[]` close returns | Market-data detail and run detail |
-| Annualized volatility | Daily return standard deviation times trading-day annualization | Run summary and market-data detail |
-| Average true range percent | OHLC candles | Market-data detail; useful for ladder context |
-| Max single-day move | Close-to-close returns | Run detail and chart side stats |
+| Metric                          | Input                                                           | Persist/display                               |
+| ------------------------------- | --------------------------------------------------------------- | --------------------------------------------- |
+| Daily close-to-close volatility | `Candle[]` close returns                                        | Market-data detail and run detail             |
+| Annualized volatility           | Daily return standard deviation times trading-day annualization | Run summary and market-data detail            |
+| Average true range percent      | OHLC candles                                                    | Market-data detail; useful for ladder context |
+| Max single-day move             | Close-to-close returns                                          | Run detail and chart side stats               |
 
 Place source-neutral functions in `src/modules/market-data/domain/volatility-metrics.ts`. Backtest run completion can call these functions on the exact candle series used by the run, then persist a versioned `volatilityMetricsJson` snapshot. Market-data detail can compute metrics on demand from a chunk until list views need scalar columns.
 
@@ -298,12 +298,12 @@ Magic UI should be added as copied components under `src/components/ui/`, matchi
 
 ## Provider Notes
 
-| Provider | Architectural implication | Confidence |
-| --- | --- | --- |
-| Alpha Vantage | Existing adapter should move from env-only API key to provider registry plus persisted key lookup. Current implementation uses raw `TIME_SERIES_DAILY`; adjusted data requires an explicit adjusted mode choice. Compact/free behavior means fetch plans should explain recent-range limits. | HIGH from current code and official docs |
-| Twelve Data | `time_series` supports daily interval, date-bounded requests, JSON/CSV output, and a 5,000 point single-request recommendation. It fits the same adapter interface but needs provider-specific metadata for exchange timezone and response status. | MEDIUM from official docs/support |
-| Polygon/Massive | Custom bars endpoint maps well to requested ticker/date range/adjusted status and includes pagination via `next_url`; plan history varies by subscription. It fits the registry but needs pagination and plan-limit handling. | MEDIUM from official docs |
-| CSV/custom | Should not be a provider adapter. Treat it as `custom_csv` source persisted through the same chunk table and resolver. | HIGH from architecture constraints |
+| Provider        | Architectural implication                                                                                                                                                                                                                                                                    | Confidence                               |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| Alpha Vantage   | Existing adapter should move from env-only API key to provider registry plus persisted key lookup. Current implementation uses raw `TIME_SERIES_DAILY`; adjusted data requires an explicit adjusted mode choice. Compact/free behavior means fetch plans should explain recent-range limits. | HIGH from current code and official docs |
+| Twelve Data     | `time_series` supports daily interval, date-bounded requests, JSON/CSV output, and a 5,000 point single-request recommendation. It fits the same adapter interface but needs provider-specific metadata for exchange timezone and response status.                                           | MEDIUM from official docs/support        |
+| Polygon/Massive | Custom bars endpoint maps well to requested ticker/date range/adjusted status and includes pagination via `next_url`; plan history varies by subscription. It fits the registry but needs pagination and plan-limit handling.                                                                | MEDIUM from official docs                |
+| CSV/custom      | Should not be a provider adapter. Treat it as `custom_csv` source persisted through the same chunk table and resolver.                                                                                                                                                                       | HIGH from architecture constraints       |
 
 ## Build Order Recommendation
 
@@ -348,15 +348,15 @@ Magic UI should be added as copied components under `src/components/ui/`, matchi
 
 ## Risks and Mitigations
 
-| Risk | Why it matters | Mitigation |
-| --- | --- | --- |
-| Provider selection remains environment-driven | Prevents single-admin settings and makes silent/confirmed fetch behavior brittle. | Replace `MARKET_DATA_SOURCE` for product behavior; keep env only for build/runtime infrastructure. |
-| Repeated fetches overwrite or hide prior data | Requirement needs distinct persisted rows and source transparency. | No uniqueness constraint over chunk identity; show fetched/imported timestamp and metadata. |
-| Mixed-provider candle stitching becomes misleading | A backtest can look deterministic while using inconsistent sources. | Only auto-stitch compatible chunks; require explicit confirmation for mixed sources. |
-| API keys leak through UI or logs | Provider keys are sensitive even in single-admin mode. | Server-only credential service, encrypted storage, last-four display only, sanitized provider metadata. |
-| JSONB provenance becomes another unvalidated artifact | Existing concerns already call out unvalidated run artifacts. | Add versioned schemas and parse at repository boundaries before pages render. |
-| Long fetch/run work exceeds request lifecycle | Current app is synchronous. | Start synchronous with visible state and range limits; keep typed lifecycle statuses so a queue can be introduced later. |
-| Magic UI creates visual drift | App should remain data-forward. | Use copied components as local UI primitives and apply only where interaction states improve. |
+| Risk                                                  | Why it matters                                                                    | Mitigation                                                                                                               |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Provider selection remains environment-driven         | Prevents single-admin settings and makes silent/confirmed fetch behavior brittle. | Replace `MARKET_DATA_SOURCE` for product behavior; keep env only for build/runtime infrastructure.                       |
+| Repeated fetches overwrite or hide prior data         | Requirement needs distinct persisted rows and source transparency.                | No uniqueness constraint over chunk identity; show fetched/imported timestamp and metadata.                              |
+| Mixed-provider candle stitching becomes misleading    | A backtest can look deterministic while using inconsistent sources.               | Only auto-stitch compatible chunks; require explicit confirmation for mixed sources.                                     |
+| API keys leak through UI or logs                      | Provider keys are sensitive even in single-admin mode.                            | Server-only credential service, encrypted storage, last-four display only, sanitized provider metadata.                  |
+| JSONB provenance becomes another unvalidated artifact | Existing concerns already call out unvalidated run artifacts.                     | Add versioned schemas and parse at repository boundaries before pages render.                                            |
+| Long fetch/run work exceeds request lifecycle         | Current app is synchronous.                                                       | Start synchronous with visible state and range limits; keep typed lifecycle statuses so a queue can be introduced later. |
+| Magic UI creates visual drift                         | App should remain data-forward.                                                   | Use copied components as local UI primitives and apply only where interaction states improve.                            |
 
 ## Sources
 

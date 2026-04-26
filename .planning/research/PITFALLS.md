@@ -24,15 +24,15 @@ Key local concerns that materially affect this milestone:
 
 Use these labels as roadmap targets when assigning the warnings below:
 
-| Phase | Purpose |
-| --- | --- |
-| Phase 1: Provider Settings and Secrets | API-key CRUD, provider settings, server-only secret handling, safe errors |
-| Phase 2: Data Provenance Schema | provider/import metadata, adjusted/raw state, currency, timezone, source identity, migrations |
-| Phase 3: Fetch Lifecycle and Missing-Data UX | coverage check, confirm-before-fetch, visible progress, dedupe, quota/backoff |
-| Phase 4: CSV Import | mapping, preview, row validation, custom-source persistence |
-| Phase 5: Backtest Metrics Correctness | known metric fixes, volatility metrics, artifact versioning |
-| Phase 6: Provider-Labeled Charts and UI Polish | chart labels, loading/empty states, Magic UI restraint, responsive verification |
-| Phase 7: Operability Hardening | pagination/projections, limits, observability, deploy readiness, auth before public use |
+| Phase                                          | Purpose                                                                                       |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Phase 1: Provider Settings and Secrets         | API-key CRUD, provider settings, server-only secret handling, safe errors                     |
+| Phase 2: Data Provenance Schema                | provider/import metadata, adjusted/raw state, currency, timezone, source identity, migrations |
+| Phase 3: Fetch Lifecycle and Missing-Data UX   | coverage check, confirm-before-fetch, visible progress, dedupe, quota/backoff                 |
+| Phase 4: CSV Import                            | mapping, preview, row validation, custom-source persistence                                   |
+| Phase 5: Backtest Metrics Correctness          | known metric fixes, volatility metrics, artifact versioning                                   |
+| Phase 6: Provider-Labeled Charts and UI Polish | chart labels, loading/empty states, Magic UI restraint, responsive verification               |
+| Phase 7: Operability Hardening                 | pagination/projections, limits, observability, deploy readiness, auth before public use       |
 
 ## Critical Pitfalls
 
@@ -399,54 +399,54 @@ Use these labels as roadmap targets when assigning the warnings below:
 
 ## Phase-Specific Warning Matrix
 
-| Phase Topic | Likely Pitfall | Mitigation | Verification |
-| --- | --- | --- | --- |
-| Provider API-key CRUD | Secret leakage, raw error exposure | Server-only CRUD, encrypted storage, masking, redaction | API tests ensure no full key in responses/errors |
-| Provider selection | Free-tier fit mistaken for product fit | Provider capability/terms checklist before coding | Provider contract tests and documented provider decision |
-| Market-data schema | Provenance too thin | Add adjustment, currency, timezone, provider/import metadata | Repository tests for distinct same-range chunks |
-| Missing-data backtest UX | Quota surprise and duplicate fetches | Confirm-first, dedupe, progress, quota mapping | Fake-provider 429/concurrency tests |
-| Silent fetch setting | Invisible network work | Only after lifecycle exists; visible progress and budget cap | UI/service tests for silent visible progress |
-| CSV import | Malformed/custom data corrupts backtests | Parser, mapping preview, row validation, metadata | CSV fixture suite with invalid rows and large files |
-| Volatility metrics | Precise-looking wrong numbers | Fix existing metric bugs first; pure versioned metrics | Hand-calculated metrics tests |
-| Charts | Pretty but source-opaque | Source labels on every chart and run surface | Screenshot/UI checks for provenance visibility |
-| Scaling | List pages parse all JSON | Compact projections, pagination, limits | Repository tests assert list projections avoid JSON parsing |
-| Deployment | Single-admin app exposed publicly | Auth/public-deploy gate before shared use | Release checklist and route/security tests later |
+| Phase Topic              | Likely Pitfall                           | Mitigation                                                   | Verification                                                |
+| ------------------------ | ---------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------- |
+| Provider API-key CRUD    | Secret leakage, raw error exposure       | Server-only CRUD, encrypted storage, masking, redaction      | API tests ensure no full key in responses/errors            |
+| Provider selection       | Free-tier fit mistaken for product fit   | Provider capability/terms checklist before coding            | Provider contract tests and documented provider decision    |
+| Market-data schema       | Provenance too thin                      | Add adjustment, currency, timezone, provider/import metadata | Repository tests for distinct same-range chunks             |
+| Missing-data backtest UX | Quota surprise and duplicate fetches     | Confirm-first, dedupe, progress, quota mapping               | Fake-provider 429/concurrency tests                         |
+| Silent fetch setting     | Invisible network work                   | Only after lifecycle exists; visible progress and budget cap | UI/service tests for silent visible progress                |
+| CSV import               | Malformed/custom data corrupts backtests | Parser, mapping preview, row validation, metadata            | CSV fixture suite with invalid rows and large files         |
+| Volatility metrics       | Precise-looking wrong numbers            | Fix existing metric bugs first; pure versioned metrics       | Hand-calculated metrics tests                               |
+| Charts                   | Pretty but source-opaque                 | Source labels on every chart and run surface                 | Screenshot/UI checks for provenance visibility              |
+| Scaling                  | List pages parse all JSON                | Compact projections, pagination, limits                      | Repository tests assert list projections avoid JSON parsing |
+| Deployment               | Single-admin app exposed publicly        | Auth/public-deploy gate before shared use                    | Release checklist and route/security tests later            |
 
 ## Source Notes
 
-| Source | Relevance | Confidence |
-| --- | --- | --- |
-| `.planning/PROJECT.md` | Milestone requirements, constraints, active scope | HIGH |
-| `.planning/codebase/CONCERNS.md` | Existing bugs, security gaps, performance bottlenecks | HIGH |
-| `.planning/codebase/ARCHITECTURE.md` | Current service/repository/provider architecture | HIGH |
-| `.planning/codebase/TESTING.md` | Current test framework and gaps | HIGH |
-| `README.md` | Current user-facing workflow and environment switches | HIGH |
-| `AGENTS.md`, `AGENTS.bright-builds.md`, `standards-overrides.md` | Repo workflow and verification expectations | HIGH |
-| Bright Builds canonical `standards/` files | Not present in this worktree; used only via loaded sidecar summaries | LOW |
-| https://www.alphavantage.co/documentation/ | Daily/raw/adjusted endpoint behavior and compact/full limits | HIGH |
-| https://www.alphavantage.co/support/ | Free quota, data entitlements, adjusted-method notes | HIGH |
-| https://www.alphavantage.co/premium/ | Premium quota tiers and no-daily-limit note | HIGH |
-| https://support.twelvedata.com/en/articles/5615854-credits | Twelve Data credit model, 429 behavior, reset windows | HIGH |
-| https://support.twelvedata.com/en/articles/5713553-control-over-api-usage | Twelve Data usage headers and `/api_usage` endpoint | HIGH |
-| https://support.twelvedata.com/en/articles/5214728-getting-historical-data | Twelve Data date/outputsize nuances and 5,000 point limit | HIGH |
-| https://support.twelvedata.com/en/articles/5745849-timezones | Twelve Data default timezone behavior | HIGH |
-| https://polygon.io/pricing/ and https://massive.com/pricing | Polygon/Massive plan limits and historical range tiers | MEDIUM-HIGH |
-| https://polygon.io/docs/rest/stocks/aggregates/custom-bars | Aggregates endpoint fields, ET handling, split-adjusted default, limits | HIGH |
-| https://polygon.io/knowledge-base/article/what-is-the-request-limit-for-polygons-restful-apis | Free REST request limit and paid unlimited note | MEDIUM-HIGH |
-| https://polygon.io/knowledge-base/article/is-polygons-stock-data-adjusted-for-splits-or-dividends | Split-adjusted default and dividend note | MEDIUM-HIGH |
-| https://polygon.io/legal/market-data-terms-of-service | Personal/non-commercial data-use constraints | MEDIUM |
-| https://magicui.design/docs/installation | Magic UI install model via shadcn CLI | HIGH |
-| https://magicui.design/docs/components | Magic UI component catalog and effect-heavy component mix | HIGH |
-| https://echarts.apache.org/handbook/en/concepts/chart-size/ | ECharts container size/resize/dispose requirements | HIGH |
-| https://datatracker.ietf.org/doc/html/rfc4180 | CSV format edge cases and interoperability caveats | HIGH |
-| https://owasp.org/www-community/attacks/CSV_Injection | CSV/formula injection risks and mitigations | HIGH |
-| https://www.papaparse.com/docs | Browser CSV parsing, worker/streaming, parse errors | MEDIUM-HIGH |
-| https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html | Secret storage/rotation guidance | HIGH |
-| https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html | Encryption-at-rest and key-management guidance | HIGH |
-| https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables | Server-only versus `NEXT_PUBLIC_` environment behavior | HIGH |
-| https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/research-guide | Look-ahead, survivorship, overfitting, adjusted-price pitfalls | HIGH |
-| https://www.quantconnect.com/docs/v2/writing-algorithms/statistics/algorithm-statistics | Backtest statistics and annualization context | MEDIUM-HIGH |
-| https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/historical-volatility | Historical volatility as annualized standard deviation | MEDIUM-HIGH |
+| Source                                                                                                                        | Relevance                                                               | Confidence  |
+| ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ----------- |
+| `.planning/PROJECT.md`                                                                                                        | Milestone requirements, constraints, active scope                       | HIGH        |
+| `.planning/codebase/CONCERNS.md`                                                                                              | Existing bugs, security gaps, performance bottlenecks                   | HIGH        |
+| `.planning/codebase/ARCHITECTURE.md`                                                                                          | Current service/repository/provider architecture                        | HIGH        |
+| `.planning/codebase/TESTING.md`                                                                                               | Current test framework and gaps                                         | HIGH        |
+| `README.md`                                                                                                                   | Current user-facing workflow and environment switches                   | HIGH        |
+| `AGENTS.md`, `AGENTS.bright-builds.md`, `standards-overrides.md`                                                              | Repo workflow and verification expectations                             | HIGH        |
+| Bright Builds canonical `standards/` files                                                                                    | Not present in this worktree; used only via loaded sidecar summaries    | LOW         |
+| https://www.alphavantage.co/documentation/                                                                                    | Daily/raw/adjusted endpoint behavior and compact/full limits            | HIGH        |
+| https://www.alphavantage.co/support/                                                                                          | Free quota, data entitlements, adjusted-method notes                    | HIGH        |
+| https://www.alphavantage.co/premium/                                                                                          | Premium quota tiers and no-daily-limit note                             | HIGH        |
+| https://support.twelvedata.com/en/articles/5615854-credits                                                                    | Twelve Data credit model, 429 behavior, reset windows                   | HIGH        |
+| https://support.twelvedata.com/en/articles/5713553-control-over-api-usage                                                     | Twelve Data usage headers and `/api_usage` endpoint                     | HIGH        |
+| https://support.twelvedata.com/en/articles/5214728-getting-historical-data                                                    | Twelve Data date/outputsize nuances and 5,000 point limit               | HIGH        |
+| https://support.twelvedata.com/en/articles/5745849-timezones                                                                  | Twelve Data default timezone behavior                                   | HIGH        |
+| https://polygon.io/pricing/ and https://massive.com/pricing                                                                   | Polygon/Massive plan limits and historical range tiers                  | MEDIUM-HIGH |
+| https://polygon.io/docs/rest/stocks/aggregates/custom-bars                                                                    | Aggregates endpoint fields, ET handling, split-adjusted default, limits | HIGH        |
+| https://polygon.io/knowledge-base/article/what-is-the-request-limit-for-polygons-restful-apis                                 | Free REST request limit and paid unlimited note                         | MEDIUM-HIGH |
+| https://polygon.io/knowledge-base/article/is-polygons-stock-data-adjusted-for-splits-or-dividends                             | Split-adjusted default and dividend note                                | MEDIUM-HIGH |
+| https://polygon.io/legal/market-data-terms-of-service                                                                         | Personal/non-commercial data-use constraints                            | MEDIUM      |
+| https://magicui.design/docs/installation                                                                                      | Magic UI install model via shadcn CLI                                   | HIGH        |
+| https://magicui.design/docs/components                                                                                        | Magic UI component catalog and effect-heavy component mix               | HIGH        |
+| https://echarts.apache.org/handbook/en/concepts/chart-size/                                                                   | ECharts container size/resize/dispose requirements                      | HIGH        |
+| https://datatracker.ietf.org/doc/html/rfc4180                                                                                 | CSV format edge cases and interoperability caveats                      | HIGH        |
+| https://owasp.org/www-community/attacks/CSV_Injection                                                                         | CSV/formula injection risks and mitigations                             | HIGH        |
+| https://www.papaparse.com/docs                                                                                                | Browser CSV parsing, worker/streaming, parse errors                     | MEDIUM-HIGH |
+| https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html                                            | Secret storage/rotation guidance                                        | HIGH        |
+| https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html                                         | Encryption-at-rest and key-management guidance                          | HIGH        |
+| https://nextjs.org/docs/pages/building-your-application/configuring/environment-variables                                     | Server-only versus `NEXT_PUBLIC_` environment behavior                  | HIGH        |
+| https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/research-guide                                           | Look-ahead, survivorship, overfitting, adjusted-price pitfalls          | HIGH        |
+| https://www.quantconnect.com/docs/v2/writing-algorithms/statistics/algorithm-statistics                                       | Backtest statistics and annualization context                           | MEDIUM-HIGH |
+| https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/historical-volatility | Historical volatility as annualized standard deviation                  | MEDIUM-HIGH |
 
 ## Bottom Line for Roadmap
 

@@ -186,12 +186,12 @@ Phases with standard patterns where `/gsd-research-phase` can usually be skipped
 
 ## Confidence Assessment
 
-| Area | Confidence | Notes |
-|------|------------|-------|
-| Stack | MEDIUM-HIGH | Core stack is verified against local `package.json` and codebase maps. Twelve Data and Magic UI choices rely on official docs but should be rechecked at implementation time. |
-| Features | HIGH | Features align directly with `.planning/PROJECT.md`, current codebase constraints, and provider/backtesting trust requirements. |
-| Architecture | HIGH | Architecture recommendations fit the current functional-core/server-shell layout and local module boundaries. |
-| Pitfalls | MEDIUM-HIGH | Most risks are grounded in current codebase concerns and official provider/security docs; exact exchange calendar and provider terms details can change. |
+| Area         | Confidence  | Notes                                                                                                                                                                         |
+| ------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Stack        | MEDIUM-HIGH | Core stack is verified against local `package.json` and codebase maps. Twelve Data and Magic UI choices rely on official docs but should be rechecked at implementation time. |
+| Features     | HIGH        | Features align directly with `.planning/PROJECT.md`, current codebase constraints, and provider/backtesting trust requirements.                                               |
+| Architecture | HIGH        | Architecture recommendations fit the current functional-core/server-shell layout and local module boundaries.                                                                 |
+| Pitfalls     | MEDIUM-HIGH | Most risks are grounded in current codebase concerns and official provider/security docs; exact exchange calendar and provider terms details can change.                      |
 
 **Overall confidence:** MEDIUM-HIGH
 
@@ -236,7 +236,7 @@ Phases with standard patterns where `/gsd-research-phase` can usually be skipped
 
 - Bright Builds canonical standards loaded from the pinned sidecar commit - workflow and architecture alignment context, not product-domain evidence.
 
-______________________________________________________________________
+---
 
-*Research completed: 2026-04-26*
-*Ready for roadmap: yes*
+_Research completed: 2026-04-26_
+_Ready for roadmap: yes_

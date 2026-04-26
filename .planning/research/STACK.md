@@ -15,16 +15,16 @@ Use Magic UI selectively as source-copied UI polish, not as a design-system rewr
 
 ## Brownfield Baseline
 
-| Area | Keep | Why |
-| --- | --- | --- |
-| Runtime/package manager | Bun 1.3.13 | Already pinned in `package.json` and `bun.lock`; Docker uses the same runtime. |
-| App framework | Next.js 16.2.4 App Router + React 19.2 | Existing pages/API routes already match this architecture. |
-| Language | TypeScript 5.9.3 | Existing strict TS setup is sufficient for provider adapters and typed repositories. |
-| Persistence | PostgreSQL + Drizzle ORM 0.44.7 | Existing backtests, runs, and chunks are already persisted through Drizzle repositories. |
-| Styling | Tailwind CSS 4.1.16 | Existing UI is Tailwind-first; Magic UI components are Tailwind-compatible. |
-| Charts | ECharts 6.0.0 + `echarts-for-react` 3.0.2 | Already handles candle, equity, volume, and drawdown charts; add source labels rather than replacing it. |
-| Validation | Zod 4.1.12 | Existing boundary parsing pattern should extend to provider settings, key CRUD, and CSV import. |
-| HTTP clients | Native `fetch` | Vendor SDKs add little for simple REST candle endpoints and increase dependency surface. |
+| Area                    | Keep                                      | Why                                                                                                      |
+| ----------------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Runtime/package manager | Bun 1.3.13                                | Already pinned in `package.json` and `bun.lock`; Docker uses the same runtime.                           |
+| App framework           | Next.js 16.2.4 App Router + React 19.2    | Existing pages/API routes already match this architecture.                                               |
+| Language                | TypeScript 5.9.3                          | Existing strict TS setup is sufficient for provider adapters and typed repositories.                     |
+| Persistence             | PostgreSQL + Drizzle ORM 0.44.7           | Existing backtests, runs, and chunks are already persisted through Drizzle repositories.                 |
+| Styling                 | Tailwind CSS 4.1.16                       | Existing UI is Tailwind-first; Magic UI components are Tailwind-compatible.                              |
+| Charts                  | ECharts 6.0.0 + `echarts-for-react` 3.0.2 | Already handles candle, equity, volume, and drawdown charts; add source labels rather than replacing it. |
+| Validation              | Zod 4.1.12                                | Existing boundary parsing pattern should extend to provider settings, key CRUD, and CSV import.          |
+| HTTP clients            | Native `fetch`                            | Vendor SDKs add little for simple REST candle endpoints and increase dependency surface.                 |
 
 Material local guidance: keep functional core / imperative shell boundaries, parse external/provider data at boundaries, and verify implementation with `bun run verify`.
 
@@ -50,16 +50,16 @@ Use native `fetch` in a new server adapter such as `src/modules/market-data/serv
 
 **Provider defaults for v1:**
 
-| Setting | Recommendation |
-| --- | --- |
-| Provider id | `twelve_data` |
-| Endpoint | `https://api.twelvedata.com/time_series` |
-| Interval mapping | app `daily` -> Twelve Data `1day` |
-| Date range | Use `start_date` and `end_date`; omit `outputsize` when both dates are set. |
-| Order | Request `order=asc` if supported for the endpoint; otherwise sort in the domain layer after parsing. |
-| Adjustment | Default to `splits`; store explicit user/provider adjustment choice on the chunk. |
-| Currency | Persist `meta.currency`, default display to USD when absent. |
-| Rate-limit posture | One fetch per submitted request is fine for v1; show quota/provider errors directly. |
+| Setting            | Recommendation                                                                                       |
+| ------------------ | ---------------------------------------------------------------------------------------------------- |
+| Provider id        | `twelve_data`                                                                                        |
+| Endpoint           | `https://api.twelvedata.com/time_series`                                                             |
+| Interval mapping   | app `daily` -> Twelve Data `1day`                                                                    |
+| Date range         | Use `start_date` and `end_date`; omit `outputsize` when both dates are set.                          |
+| Order              | Request `order=asc` if supported for the endpoint; otherwise sort in the domain layer after parsing. |
+| Adjustment         | Default to `splits`; store explicit user/provider adjustment choice on the chunk.                    |
+| Currency           | Persist `meta.currency`, default display to USD when absent.                                         |
+| Rate-limit posture | One fetch per submitted request is fine for v1; show quota/provider errors directly.                 |
 
 ### Keep: Alpha Vantage
 
@@ -99,14 +99,14 @@ Treat Polygon/Massive as the next paid/quality upgrade provider, especially if t
 
 Extend the existing market-data model rather than creating a separate provider subsystem.
 
-| Concept | Recommendation |
-| --- | --- |
-| `MarketDataSource` | Add `twelve_data` and `csv_import`; keep `alpha_vantage` and `sample`. Leave `polygon` reserved but unimplemented. |
-| Chunk identity | Persist provider, ticker, requested start/end, actual min/max candle dates, interval, adjustment mode, currency, fetched/imported timestamp, and source metadata. |
-| Separate fetches | Allow separate rows for repeated fetches even with the same ticker/range/provider; choose "latest eligible row" only in read/query logic. |
-| Source metadata | Store provider response metadata and import metadata as typed JSON at repository boundaries. |
-| Display labels | Build chart labels from persisted chunk source fields, not from current environment variables. |
-| Sample data | Keep `sample` as explicit demo/development data, never the implicit fallback for normal backtests. |
+| Concept            | Recommendation                                                                                                                                                    |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MarketDataSource` | Add `twelve_data` and `csv_import`; keep `alpha_vantage` and `sample`. Leave `polygon` reserved but unimplemented.                                                |
+| Chunk identity     | Persist provider, ticker, requested start/end, actual min/max candle dates, interval, adjustment mode, currency, fetched/imported timestamp, and source metadata. |
+| Separate fetches   | Allow separate rows for repeated fetches even with the same ticker/range/provider; choose "latest eligible row" only in read/query logic.                         |
+| Source metadata    | Store provider response metadata and import metadata as typed JSON at repository boundaries.                                                                      |
+| Display labels     | Build chart labels from persisted chunk source fields, not from current environment variables.                                                                    |
+| Sample data        | Keep `sample` as explicit demo/development data, never the implicit fallback for normal backtests.                                                                |
 
 Provider selection should move out of the `MARKET_DATA_SOURCE` environment switch and into persisted app/provider settings. Keep the env var only as a temporary compatibility fallback during migration.
 
@@ -114,20 +114,20 @@ Provider selection should move out of the `MARKET_DATA_SOURCE` environment switc
 
 Use PostgreSQL plus app-level encryption. Do not add a hosted secret manager or auth provider for this single-admin milestone.
 
-| Need | Stack choice | Why |
-| --- | --- | --- |
-| Provider key CRUD | New Drizzle table, server-only repository/service, App Router settings pages | Matches existing architecture and avoids introducing a settings service dependency. |
-| Key encryption | `node:crypto` AES-GCM with `PROVIDER_KEYS_ENCRYPTION_SECRET` | Standard library, no new dependency, enough for single-admin at-rest protection. |
-| Key display | Store/display provider name, enabled status, last 4 characters, created/updated dates, and last validation result | Lets the UI manage keys without exposing raw values after save. |
-| App settings | Drizzle table for default provider, missing-data behavior, default adjustment mode, and sample-data visibility | Keeps roadmap settings durable and testable. |
-| Secret exposure | `server-only` modules and non-public env names | Provider keys must never use `NEXT_PUBLIC_*` names or client props. |
+| Need              | Stack choice                                                                                                      | Why                                                                                 |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Provider key CRUD | New Drizzle table, server-only repository/service, App Router settings pages                                      | Matches existing architecture and avoids introducing a settings service dependency. |
+| Key encryption    | `node:crypto` AES-GCM with `PROVIDER_KEYS_ENCRYPTION_SECRET`                                                      | Standard library, no new dependency, enough for single-admin at-rest protection.    |
+| Key display       | Store/display provider name, enabled status, last 4 characters, created/updated dates, and last validation result | Lets the UI manage keys without exposing raw values after save.                     |
+| App settings      | Drizzle table for default provider, missing-data behavior, default adjustment mode, and sample-data visibility    | Keeps roadmap settings durable and testable.                                        |
+| Secret exposure   | `server-only` modules and non-public env names                                                                    | Provider keys must never use `NEXT_PUBLIC_*` names or client props.                 |
 
 Recommended tables:
 
-| Table | Purpose |
-| --- | --- |
-| `provider_api_keys` | Provider id, encrypted key, iv, auth metadata, last4, enabled flag, validation status, timestamps. |
-| `app_settings` | Single-row settings for default provider, missing-data behavior, default adjustment mode, and sample-data gate. |
+| Table               | Purpose                                                                                                         |
+| ------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `provider_api_keys` | Provider id, encrypted key, iv, auth metadata, last4, enabled flag, validation status, timestamps.              |
+| `app_settings`      | Single-row settings for default provider, missing-data behavior, default adjustment mode, and sample-data gate. |
 
 ## CSV Import Stack
 
@@ -141,14 +141,14 @@ Initial import can read modest uploaded files through a Next route handler using
 
 CSV import should normalize into the same `MarketDataChunkDraft` path as providers:
 
-| Field | Recommendation |
-| --- | --- |
-| Required columns | `date`, `open`, `high`, `low`, `close`; `volume` optional but preferred. |
-| Optional columns | `adjusted_close`, `source`, `currency`, `timezone`, `notes`. |
-| Validation | Zod row validation plus domain candle sorting/filtering. |
-| Source id | `csv_import`. |
-| Adjustment | Ask user to declare `adjusted`, `unadjusted`, or `unknown`; do not infer silently. |
-| Provenance | Persist filename, row count, import timestamp, column mapping, and declared source notes. |
+| Field            | Recommendation                                                                            |
+| ---------------- | ----------------------------------------------------------------------------------------- |
+| Required columns | `date`, `open`, `high`, `low`, `close`; `volume` optional but preferred.                  |
+| Optional columns | `adjusted_close`, `source`, `currency`, `timezone`, `notes`.                              |
+| Validation       | Zod row validation plus domain candle sorting/filtering.                                  |
+| Source id        | `csv_import`.                                                                             |
+| Adjustment       | Ask user to declare `adjusted`, `unadjusted`, or `unknown`; do not infer silently.        |
+| Provenance       | Persist filename, row count, import timestamp, column mapping, and declared source notes. |
 
 ## Magic UI Stack
 
@@ -160,15 +160,15 @@ Magic UI's official installation path uses the shadcn CLI, and its docs describe
 
 Recommended dependency surface:
 
-| Package | Current npm version checked | Add? | Why |
-| --- | ---: | --- | --- |
-| `motion` | 12.38.0 | Yes | Required by Magic UI components such as Magic Card. |
-| `lucide-react` | 1.11.0 | Yes | Use for quiet operational icons in buttons, settings, provider status, imports, and chart labels. |
-| `clsx` | 2.1.1 | Yes | Small className utility for copied UI components. |
-| `tailwind-merge` | 3.5.0 | Yes | Prevents copied Tailwind components from accumulating conflicting classes. |
-| `next-themes` | 0.4.6 | Defer | Only add if a real theme setting is implemented; do not add it just because the Magic Card demo imports it. |
-| `class-variance-authority` | 0.7.1 | Defer | Useful for a full shadcn variant system, unnecessary for targeted polish. |
-| `shadcn` CLI | 4.5.0 | CLI only | Use through `bunx` if needed; do not add as a runtime dependency. |
+| Package                    | Current npm version checked | Add?     | Why                                                                                                         |
+| -------------------------- | --------------------------: | -------- | ----------------------------------------------------------------------------------------------------------- |
+| `motion`                   |                     12.38.0 | Yes      | Required by Magic UI components such as Magic Card.                                                         |
+| `lucide-react`             |                      1.11.0 | Yes      | Use for quiet operational icons in buttons, settings, provider status, imports, and chart labels.           |
+| `clsx`                     |                       2.1.1 | Yes      | Small className utility for copied UI components.                                                           |
+| `tailwind-merge`           |                       3.5.0 | Yes      | Prevents copied Tailwind components from accumulating conflicting classes.                                  |
+| `next-themes`              |                       0.4.6 | Defer    | Only add if a real theme setting is implemented; do not add it just because the Magic Card demo imports it. |
+| `class-variance-authority` |                       0.7.1 | Defer    | Useful for a full shadcn variant system, unnecessary for targeted polish.                                   |
+| `shadcn` CLI               |                       4.5.0 | CLI only | Use through `bunx` if needed; do not add as a runtime dependency.                                           |
 
 Preferred install command for this milestone:
 
@@ -180,29 +180,29 @@ If a Magic UI component is copied from the registry and imports `@/lib/utils`, a
 
 Recommended Magic UI components:
 
-| Component | Use | Notes |
-| --- | --- | --- |
-| Magic Card | Provider status cards, selected market-data source cards, key validation panels | Use low-opacity neutral/green/amber gradients. Avoid the high-saturation default purple/pink look. |
-| Number Ticker | Volatility, drawdown, return, and candle-count metrics | Use only for scalar metric transitions; respect reduced-motion preferences if needed. |
-| Animated List | Fetch progress, recent import/fetch events, validation warnings | Good fit for a compact operational activity feed. |
-| Blur Fade | Empty states and small section entrances | Keep durations short and do not animate dense data tables row-by-row. |
-| Border Beam or Shine Border | Active fetch state or "real data selected" emphasis | Use sparingly; not for every card. |
+| Component                   | Use                                                                             | Notes                                                                                              |
+| --------------------------- | ------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Magic Card                  | Provider status cards, selected market-data source cards, key validation panels | Use low-opacity neutral/green/amber gradients. Avoid the high-saturation default purple/pink look. |
+| Number Ticker               | Volatility, drawdown, return, and candle-count metrics                          | Use only for scalar metric transitions; respect reduced-motion preferences if needed.              |
+| Animated List               | Fetch progress, recent import/fetch events, validation warnings                 | Good fit for a compact operational activity feed.                                                  |
+| Blur Fade                   | Empty states and small section entrances                                        | Keep durations short and do not animate dense data tables row-by-row.                              |
+| Border Beam or Shine Border | Active fetch state or "real data selected" emphasis                             | Use sparingly; not for every card.                                                                 |
 
 Avoid for this app: Marquee, Globe, Dock, Orbiting Circles, Meteors, Confetti, Particles, Retro Grid, Animated Grid Pattern, Aurora Text, Rainbow Button, Shimmer Button, and marketing template blocks.
 
 ## What Not To Add
 
-| Do not add | Reason |
-| --- | --- |
-| Prisma or another ORM | Drizzle is already in place and typed repository boundaries are the right extension point. |
-| TanStack Query/global client cache | Current pages/API routes can handle settings, fetch confirmation, and import flows without a new state layer. |
-| Redis, BullMQ, Temporal, or background workers | Missing-data fetches are small provider calls in v1; show client pending/progress state and persist resulting chunks. |
-| Vendor SDKs for Twelve Data, Alpha Vantage, Polygon, or Finnhub | REST calls are simple and native `fetch` keeps provider adapters transparent. |
-| NextAuth/Clerk/Supabase Auth | Single-admin assumption remains explicit for this milestone. |
-| S3/UploadThing/object storage | CSV import can parse uploaded files directly and persist normalized candles in PostgreSQL. |
-| A second charting library | ECharts already covers the charting surface; extend labels and legends instead. |
-| `pandas`, Python tooling, or yfinance | This is a Bun/Next app; unofficial data scraping does not belong in the runtime stack. |
-| Stooq HTTP scraping | No formal API contract and awkward download workflow; support Stooq-like data through CSV import instead. |
+| Do not add                                                      | Reason                                                                                                                |
+| --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Prisma or another ORM                                           | Drizzle is already in place and typed repository boundaries are the right extension point.                            |
+| TanStack Query/global client cache                              | Current pages/API routes can handle settings, fetch confirmation, and import flows without a new state layer.         |
+| Redis, BullMQ, Temporal, or background workers                  | Missing-data fetches are small provider calls in v1; show client pending/progress state and persist resulting chunks. |
+| Vendor SDKs for Twelve Data, Alpha Vantage, Polygon, or Finnhub | REST calls are simple and native `fetch` keeps provider adapters transparent.                                         |
+| NextAuth/Clerk/Supabase Auth                                    | Single-admin assumption remains explicit for this milestone.                                                          |
+| S3/UploadThing/object storage                                   | CSV import can parse uploaded files directly and persist normalized candles in PostgreSQL.                            |
+| A second charting library                                       | ECharts already covers the charting surface; extend labels and legends instead.                                       |
+| `pandas`, Python tooling, or yfinance                           | This is a Bun/Next app; unofficial data scraping does not belong in the runtime stack.                                |
+| Stooq HTTP scraping                                             | No formal API contract and awkward download workflow; support Stooq-like data through CSV import instead.             |
 
 ## Roadmap Implications
 
@@ -217,15 +217,15 @@ Recommended phase order from a stack perspective:
 
 ## Confidence Assessment
 
-| Area | Confidence | Notes |
-| --- | --- | --- |
-| Keep core stack | HIGH | Verified against local codebase map and `package.json`. |
-| Twelve Data recommendation | MEDIUM-HIGH | Official pricing/docs fit the use case; validate target tickers on a real Basic key. |
-| Polygon/Massive defer | MEDIUM-HIGH | Official pricing/docs make it a good paid path, not the best free v1 default. |
-| Finnhub avoid | HIGH | Official stock-candle schema marks the required endpoint premium. |
-| Stooq as CSV-only | MEDIUM | Based on QuantStart reference context rather than an official API page. |
-| CSV parser choice | HIGH | `csv-parse` is current, MIT licensed, typed, and server-suitable. |
-| Magic UI dependency plan | MEDIUM-HIGH | Official docs confirm shadcn-style copy/install; exact component imports should be rechecked during implementation. |
+| Area                       | Confidence  | Notes                                                                                                               |
+| -------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------- |
+| Keep core stack            | HIGH        | Verified against local codebase map and `package.json`.                                                             |
+| Twelve Data recommendation | MEDIUM-HIGH | Official pricing/docs fit the use case; validate target tickers on a real Basic key.                                |
+| Polygon/Massive defer      | MEDIUM-HIGH | Official pricing/docs make it a good paid path, not the best free v1 default.                                       |
+| Finnhub avoid              | HIGH        | Official stock-candle schema marks the required endpoint premium.                                                   |
+| Stooq as CSV-only          | MEDIUM      | Based on QuantStart reference context rather than an official API page.                                             |
+| CSV parser choice          | HIGH        | `csv-parse` is current, MIT licensed, typed, and server-suitable.                                                   |
+| Magic UI dependency plan   | MEDIUM-HIGH | Official docs confirm shadcn-style copy/install; exact component imports should be rechecked during implementation. |
 
 ## Sources
 
