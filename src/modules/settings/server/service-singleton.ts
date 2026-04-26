@@ -5,6 +5,10 @@ import {
   type ProviderApiKeyService,
 } from "@/modules/settings/server/provider-api-key-service";
 import {
+  createProviderCredentialResolver,
+  type ProviderCredentialResolver,
+} from "@/modules/settings/server/provider-credential-resolver";
+import {
   createProviderKeyValidationService,
   type ProviderKeyValidationService,
 } from "@/modules/settings/server/provider-key-validation-service";
@@ -15,6 +19,7 @@ import {
 
 let maybeSettingsService: SettingsService | null = null;
 let maybeProviderApiKeyService: ProviderApiKeyService | null = null;
+let maybeProviderCredentialResolver: ProviderCredentialResolver | null = null;
 let maybeProviderKeyValidationService: ProviderKeyValidationService | null =
   null;
 
@@ -36,6 +41,16 @@ export function getProviderApiKeyService(): ProviderApiKeyService {
   maybeProviderApiKeyService = createProviderApiKeyService();
 
   return maybeProviderApiKeyService;
+}
+
+export function getProviderCredentialResolver(): ProviderCredentialResolver {
+  if (maybeProviderCredentialResolver) {
+    return maybeProviderCredentialResolver;
+  }
+
+  maybeProviderCredentialResolver = createProviderCredentialResolver();
+
+  return maybeProviderCredentialResolver;
 }
 
 export function getProviderKeyValidationService(): ProviderKeyValidationService {
