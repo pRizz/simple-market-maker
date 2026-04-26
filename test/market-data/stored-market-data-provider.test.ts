@@ -1,7 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { MarketDataChunkRecord } from "@/modules/market-data/domain/market-data-chunk";
-import { StoredMarketDataProvider } from "@/modules/backtests/server/stored-market-data-provider";
+
+vi.mock("server-only", () => ({}));
+
+let StoredMarketDataProvider: typeof import("@/modules/backtests/server/stored-market-data-provider").StoredMarketDataProvider;
 
 const baseDefinition = {
   name: "Stored data strategy",
@@ -67,6 +70,14 @@ function chunkRecord(): MarketDataChunkRecord {
 }
 
 describe("StoredMarketDataProvider", () => {
+  beforeEach(async () => {
+    // Arrange
+    const providerModule = await import(
+      "@/modules/backtests/server/stored-market-data-provider"
+    );
+    StoredMarketDataProvider = providerModule.StoredMarketDataProvider;
+  });
+
   it("returns matching chunk candles filtered to the definition range", async () => {
     // Arrange
     const provider = new StoredMarketDataProvider({
@@ -89,7 +100,7 @@ describe("StoredMarketDataProvider", () => {
 
     // Act / Assert
     await expect(provider.fetchCandles(baseDefinition)).rejects.toThrow(
-      "No stored daily market data chunk covers AAPL",
+      "No stored daily market data covers AAPL",
     );
   });
 });

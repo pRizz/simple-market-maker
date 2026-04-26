@@ -11,7 +11,7 @@ import type {
 
 const alphaVantageDailySeriesKey = "Time Series (Daily)";
 
-type FetchLike = (
+export type FetchLike = (
   input: string | URL,
   init?: RequestInit,
 ) => Promise<{

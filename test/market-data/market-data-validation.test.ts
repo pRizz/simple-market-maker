@@ -1,11 +1,12 @@
 import { describe, expect, it } from "vitest";
 
+import type { RawMarketDataChunkInput } from "@/modules/market-data/domain/market-data-validation";
 import { maybeParseMarketDataChunk } from "@/modules/market-data/domain/market-data-validation";
 
 describe("maybeParseMarketDataChunk", () => {
   it("rejects an end date before the start date", () => {
     // Arrange
-    const rawInput = {
+    const rawInput: RawMarketDataChunkInput = {
       ticker: "AAPL",
       source: "sample",
       interval: "daily",
@@ -29,7 +30,7 @@ describe("maybeParseMarketDataChunk", () => {
 
   it("normalizes ticker casing and trims notes", () => {
     // Arrange
-    const rawInput = {
+    const rawInput: RawMarketDataChunkInput = {
       ticker: " msft ",
       source: "alpha_vantage",
       interval: "daily",
@@ -59,7 +60,7 @@ describe("maybeParseMarketDataChunk", () => {
       startDate: "2024-01-01",
       endDate: "2024-01-10",
       notes: "",
-    };
+    } as unknown as Parameters<typeof maybeParseMarketDataChunk>[0];
 
     // Act
     const result = maybeParseMarketDataChunk(rawInput);

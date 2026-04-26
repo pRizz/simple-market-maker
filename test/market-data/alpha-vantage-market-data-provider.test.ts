@@ -1,8 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { AlphaVantageMarketDataProvider } from "@/modules/market-data/server/alpha-vantage-market-data-provider";
+import type { FetchLike } from "@/modules/market-data/server/alpha-vantage-market-data-provider";
 
-function successfulFetch(body: unknown) {
+function successfulFetch(body: unknown): FetchLike {
   return async () => ({
     json: async () => body,
     ok: true,
@@ -77,7 +78,11 @@ describe("AlphaVantageMarketDataProvider", () => {
     });
 
     // Assert
-    const requestedUrl = fetchFn.mock.calls[0]?.[0];
+    const firstCall = fetchFn.mock.calls[0];
+    if (!firstCall) {
+      throw new Error("Expected Alpha Vantage provider to call fetch.");
+    }
+    const requestedUrl = firstCall[0];
     expect(requestedUrl).toBeInstanceOf(URL);
     if (!(requestedUrl instanceof URL)) {
       throw new Error("Expected Alpha Vantage provider to call URL.");

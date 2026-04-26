@@ -1,9 +1,6 @@
 import "server-only";
 
-import type {
-  MarketDataChunkRecord,
-  RawMarketDataChunkInput,
-} from "@/modules/market-data/domain/market-data-chunk";
+import type { MarketDataChunkRecord } from "@/modules/market-data/domain/market-data-chunk";
 import {
   createMarketDataService,
   type MarketDataService,
@@ -42,11 +39,11 @@ export function getBuildSafeMarketDataService(): MarketDataService {
       return [];
     },
 
-    async getChunk(_chunkId: string) {
+    async getChunk() {
       return null;
     },
 
-    async createChunk(_rawInput: RawMarketDataChunkInput) {
+    async createChunk() {
       return {
         ok: false,
         fieldErrors: {},
@@ -54,7 +51,7 @@ export function getBuildSafeMarketDataService(): MarketDataService {
       };
     },
 
-    async deleteChunk(_chunkId: string) {
+    async deleteChunk() {
       return false;
     },
 

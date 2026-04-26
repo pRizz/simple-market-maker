@@ -5,7 +5,7 @@ import { AlphaVantageMarketDataProvider } from "@/modules/market-data/server/alp
 import type { MarketDataFetchProvider } from "@/modules/market-data/server/market-data-provider";
 import { SampleMarketDataFetchProvider } from "@/modules/market-data/server/sample-market-data-fetch-provider";
 
-export function createMarketDataProvider(
+export function providerForSource(
   source: MarketDataSource,
 ): MarketDataFetchProvider {
   if (source === "sample") {
@@ -14,3 +14,5 @@ export function createMarketDataProvider(
 
   return new AlphaVantageMarketDataProvider();
 }
+
+export const createMarketDataProvider = providerForSource;

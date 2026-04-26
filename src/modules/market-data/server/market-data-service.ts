@@ -7,9 +7,11 @@ import {
 import type {
   MarketDataChunkRecord,
   MarketDataSource,
-  RawMarketDataChunkInput,
 } from "@/modules/market-data/domain/market-data-chunk";
-import { maybeParseMarketDataChunk } from "@/modules/market-data/domain/market-data-validation";
+import {
+  maybeParseMarketDataChunk,
+  type RawMarketDataChunkInput,
+} from "@/modules/market-data/domain/market-data-validation";
 import {
   createMarketDataChunkRepository,
   type MarketDataChunkRepository,
@@ -117,6 +119,12 @@ export function createMarketDataService(
 
     async listChunks(): Promise<MarketDataChunkRecord[]> {
       return marketDataChunkRepository.listChunks();
+    },
+
+    async findMatchingChunk(
+      input: Parameters<MarketDataChunkRepository["findMatchingChunk"]>[0],
+    ): Promise<MarketDataChunkRecord | null> {
+      return marketDataChunkRepository.findMatchingChunk(input);
     },
   };
 }

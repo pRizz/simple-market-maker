@@ -9,8 +9,6 @@ import {
   toMarketDataChunkFormValues,
   type MarketDataChunkFormValues,
   type MarketDataChunkRecord,
-  type MarketDataInterval,
-  type MarketDataSource,
 } from "@/modules/market-data/domain/market-data-chunk";
 
 type MarketDataFormProps = {
