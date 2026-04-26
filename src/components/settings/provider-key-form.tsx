@@ -143,7 +143,19 @@ export function ProviderKeyForm({
       status: "submitting",
     });
 
-    const result = await parseProviderKeyResponse(await mutation());
+    let result: Awaited<ReturnType<typeof parseProviderKeyResponse>>;
+
+    try {
+      result = await parseProviderKeyResponse(await mutation());
+    } catch {
+      setSubmissionState({
+        activeAction: null,
+        fieldErrors: {},
+        formErrors: ["Provider key action failed."],
+        status: "idle",
+      });
+      return;
+    }
 
     if (!result.ok) {
       setSubmissionState({

@@ -57,34 +57,42 @@ async function updateSettings(
   formErrors: string[];
   ok: boolean;
 }> {
-  const response = await fetch("/api/settings", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      defaultProvider: body.defaultProvider,
-      missingDataBehavior: body.missingDataBehavior,
-      showSampleData: body.showSampleData,
-    }),
-  });
+  try {
+    const response = await fetch("/api/settings", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        defaultProvider: body.defaultProvider,
+        missingDataBehavior: body.missingDataBehavior,
+        showSampleData: body.showSampleData,
+      }),
+    });
 
-  const responseBody = (await response.json()) as SettingsApiResponse;
+    const responseBody = (await response.json()) as SettingsApiResponse;
 
-  if (!response.ok || responseBody.ok === false) {
+    if (!response.ok || responseBody.ok === false) {
+      return {
+        ok: false,
+        fieldErrors: responseBody.fieldErrors ?? {},
+        formErrors: responseBody.formErrors ??
+          [responseBody.message ?? "Settings could not be saved."],
+      };
+    }
+
+    return {
+      ok: true,
+      fieldErrors: {},
+      formErrors: [],
+    };
+  } catch {
     return {
       ok: false,
-      fieldErrors: responseBody.fieldErrors ?? {},
-      formErrors: responseBody.formErrors ??
-        [responseBody.message ?? "Settings could not be saved."],
+      fieldErrors: {},
+      formErrors: ["Settings could not be saved."],
     };
   }
-
-  return {
-    ok: true,
-    fieldErrors: {},
-    formErrors: [],
-  };
 }
 
 export function SettingsForm({
