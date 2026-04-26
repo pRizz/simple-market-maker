@@ -321,10 +321,12 @@ describe("provider key validation service", () => {
   it("rejects sample and twelve data validation before decrypting, fetching, or mutating", async () => {
     // Arrange
     const repository = createFakeRepository([providerKeyRecord()]);
-    const decryptProviderKey = vi.fn<[], ProviderKeyDecryptionResult>(() => ({
-      ok: true,
-      value: rawApiKey,
-    }));
+    const decryptProviderKey = vi.fn(
+      (): ProviderKeyDecryptionResult => ({
+        ok: true,
+        value: rawApiKey,
+      }),
+    );
     const fetchFn = vi.fn();
     const service = createProviderKeyValidationService({
       decryptProviderKey,
