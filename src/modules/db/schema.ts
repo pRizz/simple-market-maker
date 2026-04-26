@@ -25,6 +25,15 @@ export const backtestRunStatusEnum = pgEnum("backtest_run_status", [
   "failed",
 ]);
 
+export const marketDataSourceEnum = pgEnum("market_data_source", [
+  "sample",
+  "alpha_vantage",
+]);
+
+export const marketDataIntervalEnum = pgEnum("market_data_interval", [
+  "daily",
+]);
+
 export const backtestDefinitionsTable = pgTable("backtest_definitions", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
@@ -94,6 +103,27 @@ export const backtestRunsTable = pgTable("backtest_runs", {
   fillEventsJson: jsonb("fill_events_json"),
   priceSeriesJson: jsonb("price_series_json"),
   createdAt: timestamp("created_at", {
+    withTimezone: true,
+  }).defaultNow().notNull(),
+});
+
+export const marketDataChunksTable = pgTable("market_data_chunks", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  ticker: text("ticker").notNull(),
+  source: marketDataSourceEnum("source").notNull(),
+  interval: marketDataIntervalEnum("interval").notNull(),
+  startDate: timestamp("start_date", { withTimezone: true }).notNull(),
+  endDate: timestamp("end_date", { withTimezone: true }).notNull(),
+  candleCount: integer("candle_count").notNull(),
+  candlesJson: jsonb("candles_json").notNull(),
+  notes: text("notes").notNull(),
+  fetchedAt: timestamp("fetched_at", {
+    withTimezone: true,
+  }).notNull(),
+  createdAt: timestamp("created_at", {
+    withTimezone: true,
+  }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", {
     withTimezone: true,
   }).defaultNow().notNull(),
 });
