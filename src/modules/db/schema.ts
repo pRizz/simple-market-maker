@@ -1,4 +1,5 @@
 import {
+  boolean,
   integer,
   jsonb,
   numeric,
@@ -33,6 +34,44 @@ export const marketDataSourceEnum = pgEnum("market_data_source", [
 export const marketDataIntervalEnum = pgEnum("market_data_interval", [
   "daily",
 ]);
+
+export const appSettingsTable = pgTable("app_settings", {
+  id: text("id").primaryKey().default("singleton"),
+  defaultProvider: text("default_provider").notNull().default("alpha_vantage"),
+  missingDataBehavior: text("missing_data_behavior")
+    .notNull()
+    .default("confirm_before_fetch"),
+  showSampleData: boolean("show_sample_data").notNull().default(false),
+  createdAt: timestamp("created_at", {
+    withTimezone: true,
+  }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", {
+    withTimezone: true,
+  }).defaultNow().notNull(),
+});
+
+export const providerApiKeysTable = pgTable("provider_api_keys", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  providerId: text("provider_id").notNull().unique(),
+  encryptedKey: text("encrypted_key").notNull(),
+  encryptionIv: text("encryption_iv").notNull(),
+  encryptionAuthTag: text("encryption_auth_tag").notNull(),
+  maskedSuffix: text("masked_suffix").notNull(),
+  enabled: boolean("enabled").notNull().default(true),
+  validationStatus: text("validation_status")
+    .notNull()
+    .default("not_validated"),
+  validationMessage: text("validation_message"),
+  lastValidatedAt: timestamp("last_validated_at", {
+    withTimezone: true,
+  }),
+  createdAt: timestamp("created_at", {
+    withTimezone: true,
+  }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", {
+    withTimezone: true,
+  }).defaultNow().notNull(),
+});
 
 export const backtestDefinitionsTable = pgTable("backtest_definitions", {
   id: uuid("id").defaultRandom().primaryKey(),
