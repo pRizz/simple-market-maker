@@ -43,7 +43,7 @@ Plans:
 - [x] 01-01-PLAN.md — Settings contracts, database schema, and generated migration.
 - [x] 01-02-PLAN.md — Server-only encrypted provider key storage and CRUD services.
 - [x] 01-03-PLAN.md — Provider key validation, credential resolution, and settings API routes.
-- [ ] 01-04-PLAN.md — Market-data provider credential wiring and sample source gate.
+- [x] 01-04-PLAN.md — Market-data provider credential wiring and sample source gate.
 - [ ] 01-05-PLAN.md — Settings UI, navigation, docs, and final verification.
 
 ### Phase 2: Market Data Provenance and Source Identity
