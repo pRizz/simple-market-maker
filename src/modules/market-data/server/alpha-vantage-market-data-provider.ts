@@ -122,7 +122,7 @@ export class AlphaVantageMarketDataProvider implements MarketDataFetchProvider {
   async fetchCandles(input: FetchMarketDataInput): Promise<Candle[]> {
     if (!this.apiKey?.trim()) {
       throw new Error(
-        "ALPHA_VANTAGE_API_KEY is required to fetch Alpha Vantage data.",
+        "Alpha Vantage provider key is not configured.",
       );
     }
 

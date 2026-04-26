@@ -21,7 +21,9 @@ import { providerForSource } from "@/modules/market-data/server/provider-factory
 
 type MarketDataServiceDependencies = {
   marketDataChunkRepository?: MarketDataChunkRepository;
-  providerFactory?: (source: MarketDataSource) => MarketDataFetchProvider;
+  providerFactory?: (
+    source: MarketDataSource,
+  ) => Promise<MarketDataFetchProvider>;
 };
 
 type CreateMarketDataChunkResult =
@@ -75,7 +77,7 @@ export function createMarketDataService(
       }
 
       try {
-        const provider = makeProvider(parsedInput.value.source);
+        const provider = await makeProvider(parsedInput.value.source);
         const fetchedCandles = await provider.fetchCandles(parsedInput.value);
         const candles = filterCandlesByDateRange(
           sortCandlesAscending(fetchedCandles),
