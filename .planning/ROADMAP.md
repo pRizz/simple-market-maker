@@ -35,8 +35,16 @@ Decimal phases appear between their surrounding integers in numeric order.
 3. Admin can validate a saved provider key and see a safe success or failure result with no raw secret or provider URL exposure.
 4. Provider-backed fetches can use saved provider keys and still fall back to existing environment configuration during migration.
 
-**Plans**: TBD
+**Plans**: 5 plans
 **UI hint**: yes
+
+Plans:
+
+- [ ] 01-01-PLAN.md — Settings contracts, database schema, and generated migration.
+- [ ] 01-02-PLAN.md — Server-only encrypted provider key storage and CRUD services.
+- [ ] 01-03-PLAN.md — Provider key validation, credential resolution, and settings API routes.
+- [ ] 01-04-PLAN.md — Market-data provider credential wiring and sample source gate.
+- [ ] 01-05-PLAN.md — Settings UI, navigation, docs, and final verification.
 
 ### Phase 2: Market Data Provenance and Source Identity
 
@@ -161,7 +169,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 
 | Phase                                               | Plans Complete | Status      | Completed |
 | --------------------------------------------------- | -------------- | ----------- | --------- |
-| 1. Provider Settings and Secrets                    | 0/TBD          | Not started | -         |
+| 1. Provider Settings and Secrets                    | 0/5            | Not started | -         |
 | 2. Market Data Provenance and Source Identity       | 0/TBD          | Not started | -         |
 | 3. Real-Data Fetch Lifecycle and Backtest Preflight | 0/TBD          | Not started | -         |
 | 4. Twelve Data Provider Decision and Adapter        | 0/TBD          | Not started | -         |
