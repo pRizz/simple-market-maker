@@ -34,8 +34,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 2. Admin can create, view, update, and delete provider API keys while the browser only receives safe metadata, masked suffixes, enabled status, validation status, and timestamps.
 3. Admin can validate a saved provider key and see a safe success or failure result with no raw secret or provider URL exposure.
 4. Provider-backed fetches can use saved provider keys and still fall back to existing environment configuration during migration.
-   **Plans**: TBD
-   **UI hint**: yes
+
+**Plans**: TBD
+**UI hint**: yes
 
 ### Phase 2: Market Data Provenance and Source Identity
 
@@ -49,8 +50,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 3. User can filter or scan market-data list views by ticker, source/provider, adjustment mode, and fetch/import status.
 4. User sees data-quality warnings for partial ranges, no-data responses, suspicious gaps, malformed rows, and provider/import warnings where available.
 5. User sees sample data labeled as an explicit demo/development source rather than an invisible normal-data fallback.
-   **Plans**: TBD
-   **UI hint**: yes
+
+**Plans**: TBD
+**UI hint**: yes
 
 ### Phase 3: Real-Data Fetch Lifecycle and Backtest Preflight
 
@@ -64,8 +66,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 3. User sees provider fetch results as daily chunks with consistent candle fields, sanitized source metadata, and safe error categories for quota, missing key, premium endpoint, invalid symbol, no data, and malformed response failures.
 4. Normal backtest flow never uses sample data unless admin explicitly chooses the demo/sample path.
 5. Completed run pages and persisted run records identify the exact market-data chunk/source snapshot, provider/import method, interval, adjustment mode, currency, and fetched/imported timestamp used.
-   **Plans**: TBD
-   **UI hint**: yes
+
+**Plans**: TBD
+**UI hint**: yes
 
 ### Phase 4: Twelve Data Provider Decision and Adapter
 
@@ -78,8 +81,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 2. If implemented, admin can save and validate a Twelve Data key and use Twelve Data in the same manual fetch and missing-data backtest flows as Alpha Vantage.
 3. If implemented, Twelve Data chunks show provider metadata including daily interval, adjustment mode, currency, exchange/timezone where available, and source warnings through existing provenance surfaces.
 4. If implemented, Twelve Data quota, missing-key, no-data, invalid-symbol, premium, and malformed responses use the shared safe error lifecycle.
-   **Plans**: TBD
-   **UI hint**: yes
+
+**Plans**: TBD
+**UI hint**: yes
 
 ### Phase 5: CSV Import Custom Data Path
 
@@ -92,8 +96,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 2. Admin sees a validation report with parsed rows, rejected rows, warnings, inferred coverage, and final source metadata.
 3. Ambiguous or malformed CSV files are rejected with clear reasons rather than guessed silently.
 4. Successful imports persist as custom market-data chunks and can satisfy the same backtest data-resolution flow as provider chunks.
-   **Plans**: TBD
-   **UI hint**: yes
+
+**Plans**: TBD
+**UI hint**: yes
 
 ### Phase 6: Metrics Correctness and Volatility
 
@@ -106,8 +111,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 2. User can see volatility metrics in market-data and backtest detail views with documented calculation assumptions.
 3. Persisted run metrics include method/version metadata for corrected performance and volatility calculations.
 4. Sparse series, constant prices, and data gaps produce controlled metric output or warnings instead of precise-looking invalid values.
-   **Plans**: TBD
-   **UI hint**: yes
+
+**Plans**: TBD
+**UI hint**: yes
 
 ### Phase 7: Provider-Labeled Charts and Interface Polish
 
@@ -121,8 +127,9 @@ Decimal phases appear between their surrounding integers in numeric order.
 3. Detail pages remain responsive and readable as candle, fill, and imported dataset sizes grow beyond demo examples.
 4. Fetch, import, validation, missing-key, missing-data, no-data, loading, and empty states are clear and actionable.
 5. Magic UI components and icons refine cards, tables, status/progress surfaces, and metric displays without marketing-style visuals or reduced data density.
-   **Plans**: TBD
-   **UI hint**: yes
+
+**Plans**: TBD
+**UI hint**: yes
 
 ## Coverage Validation
 
