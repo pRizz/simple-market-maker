@@ -147,22 +147,18 @@ export function Section({
 }
 
 export function StatGrid(props: {
-  columns?: number;
   children: ReactNode;
+  columns?: 2 | 3 | 4;
 }): React.JSX.Element {
-  const maybeColumnsClassName =
+  const columnsClassName =
     props.columns === 2
       ? "xl:grid-cols-2"
       : props.columns === 3
         ? "xl:grid-cols-3"
-        : props.columns === 4
-          ? "xl:grid-cols-4"
-          : "xl:grid-cols-4";
+        : "xl:grid-cols-4";
 
   return (
-    <section
-      className={`grid gap-4 md:grid-cols-2 ${maybeColumnsClassName}`}
-    >
+    <section className={`grid gap-4 md:grid-cols-2 ${columnsClassName}`}>
       {props.children}
     </section>
   );
