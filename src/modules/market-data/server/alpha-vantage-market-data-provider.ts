@@ -1,3 +1,5 @@
+import "server-only";
+
 import type { Candle } from "@/modules/backtests/domain/candle";
 import {
   filterCandlesByDateRange,

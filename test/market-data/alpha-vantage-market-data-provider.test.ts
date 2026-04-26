@@ -3,6 +3,8 @@ import { describe, expect, it, vi } from "vitest";
 import { AlphaVantageMarketDataProvider } from "@/modules/market-data/server/alpha-vantage-market-data-provider";
 import type { FetchLike } from "@/modules/market-data/server/alpha-vantage-market-data-provider";
 
+vi.mock("server-only", () => ({}));
+
 function successfulFetch(body: unknown): FetchLike {
   return async () => ({
     json: async () => body,
